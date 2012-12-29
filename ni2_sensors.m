@@ -41,18 +41,15 @@ switch type
     % create an meg axial gradiometer array
     [chanpos, tri] = icosahedron642;
     chanpos        = chanpos*12.5;
-    coilori        = normals(chanpos, tri, 'vertex');
-    coilori(chanpos(:,3)<1.5,:) = [];
-    chanpos(chanpos(:,3)<1.5,:) = [];
     chanpos(:,3)   = chanpos(:,3) - 1.5;
     
-    nchan = size(chanpos,1);
-    triin = sum(tri<=nchan,2)==3;
-    tri   = tri(triin,:);
-    
+    [x, y, z, chanpos, tri] = intersect_plane(chanpos, tri, [0 0 0], [1 0 0], [0 1 0]);
+    coilori                 = normals(chanpos, tri, 'vertex');
+  
+    nchan        = size(chanpos,1);
     sens.chanpos = chanpos;
     sens.chanori = coilori;
-    sens.coilpos = [chanpos; chanpos+2.5*coilori];
+    sens.coilpos = [chanpos; chanpos+5*coilori];
     sens.coilori = [coilori; -coilori];
     sens.tra     = [eye(nchan) eye(nchan)];
     for k = 1:nchan

@@ -9,14 +9,14 @@ function [data, time] = ni2_activation(varargin)
 % Input arguments:
 %   key-value pairs determine the shape of the activations.
 %
-%   frequency, scalar value (in Hz): frequency of oscillatory burst   
+%   frequency, scalar value (in Hz): frequency of oscillatory burst, default = 10 Hz   
 %   phase,     scalar value (in radians): phase of the oscillation at the
-%                peak latency.
+%                peak latency, default = 0
 %   latency,   scalar value (in s): latency at which the amplitude of the
-%                oscillation peaks.
+%                oscillation peaks, default = 0.5
 %   length,    scalar value (in s): length of the activation time course,
-%                the sampling interval is fixed to 1 ms/sample.
-%   ncycle,    scalar value: number of oscillatory cycles in the burst.
+%                the sampling interval is fixed to 1 ms/sampl, default = 1
+%   ncycle,    scalar value: number of oscillatory cycles in the burst, default = 5
 %
 % Output arguments:
 %   data = 1xN vector with the activation time course

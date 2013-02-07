@@ -1,4 +1,6 @@
-function sens = ni2_sensors(type)
+function sens = ni2_sensors(varargin)
+
+type = ft_getopt(varargin, 'type', 'eeg');
 
 switch type
   case 'eeg'

@@ -18,6 +18,7 @@ switch type
     sourcemodel.pos     = pos;
     sourcemodel.inside  = inside;
     sourcemodel.outside = outside;
+    sourcemodel.dim     = [numel(ax) numel(ax) numel(ax(ax>-1))];
   case 'mesh'
   otherwise
     error('unsupported type of sourcemodel requested');

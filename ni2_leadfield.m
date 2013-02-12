@@ -14,7 +14,15 @@ cfg.grid.inside = 1:ndip;
 cfg.reducerank  = 'no';
 leadf           = ft_prepare_leadfield(cfg);
 
-leadfield       = zeros(size(leadf.leadfield{1},1), ndip);
-for k = 1:ndip
-  leadfield(:, k) = leadf.leadfield{k}*dippar(k,4:6)';
+if size(dippar, 2)==6
+  leadfield = zeros(size(leadf.leadfield{1},1), ndip);
+  for k = 1:ndip
+    leadfield(:, k) = leadf.leadfield{k}*dippar(k,4:6)';
+  end
+else
+  leadfield = zeros(size(leadf.leadfield{1},1), ndip*3);
+  for k = 1:ndip
+    indx = (k-1)*3 + (1:3);
+    leadfield(:, indx) = leadf.leadfield{k};
+  end
 end

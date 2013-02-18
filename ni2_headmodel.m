@@ -1,7 +1,18 @@
 function headmodel = ni2_headmodel(varargin)
 
+% NI2_HEADMODEL generates a simple headmodel for forward modeling. 
+%
+% Use as
+%  headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
+%  headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
+%
+% The first call creates a singlesphere volume conduction model that can be
+% used in combination with MEG sensor-arrays. The second call creates a
+% three concentric spheres model that can be used in combination with EEG
+% sensor-arrays.
+
 type = ft_getopt(varargin, 'type',    'spherical');
-n    = ft_getopt(varargin, 'nshells', 1);
+n    = ft_getopt(varargin, 'nshell', 1);
 
 switch type
   case 'spherical'

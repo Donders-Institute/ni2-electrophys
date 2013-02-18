@@ -56,13 +56,14 @@ switch type
     sens.tra     = [eye(nchan) eye(nchan)];
     for k = 1:nchan
       sens.label{k,1}    = sprintf('meg%03d', k);
-      sens.chantype{k,1} = 'megmag';
+      sens.chantype{k,1} = 'meggrad';
     end
     sens = ft_datatype_sens(sens);
     sens.tri = tri;
     
     
   case 'meg_grad_planar'
+    % not implemented yet   
   otherwise
     error('unsupported type %s', type);
 end

@@ -1,5 +1,13 @@
 function sourcemodel = ni2_sourcemodel(varargin)
 
+% NI2_SOURCEMODEL generates a sourcemodel for forward and inverse modeling. 
+%
+% Use as:
+%  sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', res)
+%
+% Where res is a scalar that specifies the spacing between the dipoles (in
+% cm). A regular 3-dimensional grid of dipoles is created.
+
 type = ft_getopt(varargin, 'type', 'grid');
 switch type
   case 'grid'

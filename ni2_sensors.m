@@ -1,5 +1,17 @@
 function sens = ni2_sensors(varargin)
 
+% NI2_SENSORS create a fictive sensor-array. 
+%
+% Use as
+%  sens = ni2_sensors('type', senstype);
+%
+% Where senstype can be any of the following:
+%  'eeg' generates a 91-channel eeg sensor array
+%  'meg' generates a 301-channel meg magnetometer sensor array
+%  'meg_grad_axial' generates a 301-channel meg axial gradiometer sensor
+%  array.
+
+
 type = ft_getopt(varargin, 'type', 'eeg');
 
 switch type

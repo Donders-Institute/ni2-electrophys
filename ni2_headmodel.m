@@ -2,7 +2,7 @@ function headmodel = ni2_headmodel(varargin)
 
 % NI2_HEADMODEL generates a simple headmodel for forward modeling. 
 %
-% Use as
+% Use as:
 %  headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
 %  headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
 %

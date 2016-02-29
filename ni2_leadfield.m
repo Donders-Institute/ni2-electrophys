@@ -28,7 +28,7 @@ if strcmp(sens.chantype{1}, 'eeg')
 else
   cfg.grad = sens;
 end
-cfg.vol         = headmodel;
+cfg.headmodel   = headmodel;
 cfg.grid.pos    = dippar(:,1:3);
 cfg.grid.inside = 1:ndip;
 cfg.reducerank  = 'no';

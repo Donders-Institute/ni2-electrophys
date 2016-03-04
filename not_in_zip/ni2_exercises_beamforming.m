@@ -111,11 +111,12 @@ sbfr=wbfr*sensordata;
 wmn=L'*inv(L*L'+eye(301)*1e-15);
 smn=wmn*sensordata;
 
-sel=find(ismember(sourcemodel.inside, [1110 2342 2352 2674]));
+sel=find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
 sel=repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
 
 figure;
-subplot(1,2,1);plot(t1,sbf(sel(1,:),:));
+%subplot(1,2,1);plot(t1,sbf(sel(1,:),:));
+subplot(1,2,1);plot(t1,sbfr(sel(1,:),:));
 subplot(1,2,2);plot(t1,s4);
 %subplot(1,2,2);plot(t1,smn(sel(1,:),:));
 
@@ -178,7 +179,6 @@ pbf = sum(reshape(pbf,3,[]));
 source.pos=sourcemodel.pos;
 source.dim=sourcemodel.dim;
 source.inside=sourcemodel.inside;
-source.outside=sourcemodel.outside;
 source.avg.pow=zeros(size(source.pos,1),1);
 source.avg.pow(source.inside)=pbf;
 
@@ -257,7 +257,7 @@ for ii=1:size(L,2)/3
 end
 sbfr=wbfr*sensordata;
 
-sel=find(ismember(sourcemodel.inside, [2342 2352]));
+sel=find(ismember(find(sourcemodel.inside), [2342 2352]));
 sel=repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
 
 figure;
@@ -274,7 +274,6 @@ pbf=sum(reshape(pbf,3,numel(pbf)/3));
 source.pos=sourcemodel.pos;
 source.dim=sourcemodel.dim;
 source.inside=sourcemodel.inside;
-source.outside=sourcemodel.outside;
 source.avg.pow=zeros(size(source.pos,1),1);
 source.avg.pow(source.inside)=pbf;
  

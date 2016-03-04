@@ -1,6 +1,6 @@
 %% Section 2
 
-% generate some data
+% page 2
 [data,time] = ni2_activation;
 sens = ni2_sensors('type','eeg');
 headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
@@ -38,6 +38,8 @@ figure;ni2_topoplot(sens, topo_modelled);
 sumsq2=sum((topo_observed-topo_modelled).^2)./sum(topo_observed.^2);
 
 %% Section 3
+
+% page 4
 
 % create a 3D grid
 sourcemodel=ni2_sourcemodel('type','grid','resolution',1);

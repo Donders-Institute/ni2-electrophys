@@ -31,6 +31,7 @@ end
 cfg.headmodel   = headmodel;
 cfg.grid.pos    = dippar(:,1:3);
 cfg.grid.inside = 1:ndip;
+cfg.grid.unit   = 'cm';
 cfg.reducerank  = 'no';
 leadf           = ft_prepare_leadfield(cfg);
 

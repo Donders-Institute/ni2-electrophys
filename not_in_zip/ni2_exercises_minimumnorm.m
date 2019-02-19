@@ -84,7 +84,7 @@ cfg.vol                = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
-cfg.mne.lambda         = 0.5;
+cfg.mne.lambda         = 2;
 cfg.keepleadfield      = 'yes';
 source_noise_reg = ft_sourceanalysis(cfg, data);
 
@@ -130,7 +130,7 @@ cfg.mne.lambda         = 0.5;
 cfg.keepleadfield      = 'yes';
 cfg.normalize          = 'yes';
 cfg.normalizeparam     = 1;
-source_noise_lfnorm    = ft_sourceanalysis(cfg, data);
+source_noise_reg    = ft_sourceanalysis(cfg, data);
 
 figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2352});legend({'x' 'y' 'z'});
 %figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2342});legend({'x' 'y' 'z'});

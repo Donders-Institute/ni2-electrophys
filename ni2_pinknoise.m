@@ -1,4 +1,4 @@
-function x = c3_pinknoise(Nx,seed, methodflag, exponent, faxis, fs)
+function x = ni2_pinknoise(Nx,seed, methodflag, exponent, faxis, fs)
 % function x = pinknoise(Nx,seed)
 
 if nargin<3
@@ -10,7 +10,7 @@ if exist('seed','var') && ~isempty(seed)
   ftFuncRandomseed=randomseed(seed);
 end
 
-if numel(Nx)>1,
+if numel(Nx)>1
   for k = 1:Nx(1)
     if exist('exponent', 'var')
       if size(exponent,1)==Nx(1)
@@ -21,23 +21,23 @@ if numel(Nx)>1,
     end
     
     if nargin==1
-      x(k,:) = pinknoise(Nx(2));
+      x(k,:) = ni2_pinknoise(Nx(2));
     elseif nargin==2
-      x(k,:) = pinknoise(Nx(2),seed);
+      x(k,:) = ni2_pinknoise(Nx(2),seed);
     elseif nargin==3
-      x(k,:) = pinknoise(Nx(2),seed, methodflag);
+      x(k,:) = ni2_pinknoise(Nx(2),seed, methodflag);
     elseif nargin==4
-      x(k,:) = pinknoise(Nx(2),seed,methodflag,tmpexponent);
+      x(k,:) = ni2_pinknoise(Nx(2),seed,methodflag,tmpexponent);
     elseif nargin==5
-      x(k,:) = pinknoise(Nx(2),seed,methodflag,tmpexponent,faxis);
+      x(k,:) = ni2_pinknoise(Nx(2),seed,methodflag,tmpexponent,faxis);
     elseif nargin==6
-      x(k,:) = pinknoise(Nx(2),seed,methodflag,tmpexponent,faxis,fs);
+      x(k,:) = ni2_pinknoise(Nx(2),seed,methodflag,tmpexponent,faxis,fs);
     end
   end
   return;
 end
 
-switch methodflag,
+switch methodflag
   case 1
     % IIR type filter, one directional
     B = [0.049922035 -0.095993537 0.050612699 -0.004408786];

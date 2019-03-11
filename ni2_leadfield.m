@@ -31,8 +31,11 @@ end
 cfg.headmodel   = headmodel;
 cfg.grid.pos    = dippar(:,1:3);
 cfg.grid.inside = 1:ndip;
-cfg.grid.unit   = 'cm';
+cfg.grid.unit   = headmodel.unit;
 cfg.reducerank  = 'no';
+if strcmp(headmodel.type, 'singleshell')
+  cfg.singleshell.batchsize = 2500;
+end
 leadf           = ft_prepare_leadfield(cfg);
 
 if size(dippar, 2)==6

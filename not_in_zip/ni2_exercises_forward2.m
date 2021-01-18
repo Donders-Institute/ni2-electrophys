@@ -21,7 +21,7 @@ sensordata2 = leadfield*sourcedata;
 ni2_topomovie(sens, sensordata2, time);
 
 % page 3
-[data3, time] = ni2_activation('ncycle', 0.4, 'frequency', 1, 'latency', 0.6);
+[data3, time] = ni2_activation('ncycle', 0.4, 'frequency', 1, 'latency', 0.4);
 sourcedata = [data; data2; data3];
 dippar = [0 0 8.5 0 1 0; 3 5 6 0.7 0 -0.7; -5 6 3 0.5 -0.5 0.6];
 leadfield = ni2_leadfield(sens, headmodel, dippar);

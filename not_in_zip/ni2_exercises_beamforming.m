@@ -66,6 +66,7 @@ C2=leadfield*leadfield'   * sourcecov(1,1)   + ...
 
 % create a leadfield for a few locations
 sens=ni2_sensors('type','meg');
+
 headmodel=ni2_headmodel('type','spherical','nshell',1);
 leadfield1=ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]); % position 2352 in grid
 leadfield2=ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]); % position 2342 in grid
@@ -126,7 +127,7 @@ subplot(1,2,2);plot(t1,s2);
 %subplot(1,2,2);plot(t1,smn(sel(2,:),:));
 
 figure;
-subplot(1,2,1);plot(t1,sbf(sel(3,:),:));
+subplot(1,2,1);plot(t1,sbfr(sel(3,:),:));
 subplot(1,2,2);plot(t1,s1);
 %subplot(1,2,2);plot(t1,smn(sel(3,:),:));
 

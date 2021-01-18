@@ -32,6 +32,8 @@ switch type
       otherwise
         error('number of spheres other than 1 or 3 is not supported');
     end
+  case 'singleshell'
+    load('Subject01_headmodel');
   otherwise
     error('unknown type requested');
 end

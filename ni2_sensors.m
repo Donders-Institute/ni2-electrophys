@@ -75,7 +75,15 @@ switch type
     
     
   case 'meg_grad_planar'
-    % not implemented yet   
+    % not implemented yet
+  case 'meg_ctf275'
+    load('ctf275');
+    case 'meg_ctf151'
+    load('ctf151');
+  case 'meg_bti248'
+    load('bti248');
+  case 'meg_neuromag306'
+    load('neuromag306');
   otherwise
     error('unsupported type %s', type);
 end

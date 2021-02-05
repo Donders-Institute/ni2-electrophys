@@ -12,15 +12,24 @@ function sens = ni2_sensors(varargin)
 %  array.
 
 
-type = ft_getopt(varargin, 'type', 'eeg');
+type   = ft_getopt(varargin, 'type', 'eeg');
+jitter = ft_getopt(varargin, 'jitter', 0);
+n      = ft_getopt(varargin, 'n', 162); % number of vertices for the sphere, determines the number of electrodes, this is the old default
 
 switch type
   case 'eeg'
     % create an eeg electrode array
-    [chanpos, tri] = icosahedron162;
+    [chanpos, tri] = mesh_sphere(n);
     chanpos        = chanpos*10;
     chanpos(chanpos(:,3)<0,:) = [];
     
+    if jitter
+      [th,phi,r] = cart2sph(chanpos(:,1), chanpos(:,2), chanpos(:,3));
+      shift1 = 2*jitter*(rand(numel(th),1)  - 1);
+      shift2 = 2*jitter*(rand(numel(phi),1) - 1);
+      [chanpos(:,1),chanpos(:,2),chanpos(:,3)] = sph2cart(th+shift1(:),phi+shift2(:),r);
+    end
+      
     sens.chanpos = chanpos;
     sens.elecpos = chanpos;
     for k = 1:size(chanpos,1)
@@ -28,6 +37,7 @@ switch type
       sens.chantype{k,1} = 'eeg';
     end
     sens = ft_datatype_sens(sens);
+    
     
   case {'meg_mag' 'meg'}
     % create an meg magnetometer array
@@ -78,7 +88,7 @@ switch type
     % not implemented yet
   case 'meg_ctf275'
     load('ctf275');
-    case 'meg_ctf151'
+  case 'meg_ctf151'
     load('ctf151');
   case 'meg_bti248'
     load('bti248');

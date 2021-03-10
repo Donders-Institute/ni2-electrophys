@@ -7,8 +7,8 @@ y = randn(1,100);
 y = y-mean(y);
 
 covxy = (x*y')/99;
-figure;plot(x);hold on;plot(y,'r');
-figure;plot(x,y,'.');
+figure; plot(x); hold on; plot(y,'r');
+figure; plot(x,y,'.');
 
 c = randn(1,100);
 x = randn(1,100)+c;
@@ -17,8 +17,8 @@ y = randn(1,100)+c;
 y = y-mean(y);
 
 covxy = (x*y')/99
-figure;plot(x,y,'.');
-figure;plot(x);hold on;plot(y,'r');
+figure; plot(x,y,'.');
+figure; plot(x); hold on; plot(y,'r');
 
 c = randn(1,100);
 x = randn(1,100)+2.*c;
@@ -27,8 +27,8 @@ y = randn(1,100)+2.*c;
 y = y-mean(y);
 
 covxy = (x*y')/99
-figure;plot(x,y,'.');
-figure;plot(x);hold on;plot(y,'r');
+figure; plot(x,y,'.');
+figure; plot(x); hold on; plot(y,'r');
 
 c = randn(1,100);
 x = randn(1,100)+2.*c;
@@ -37,24 +37,24 @@ y = randn(1,100)-2.*c;
 y = y-mean(y);
 
 covxy = (x*y')/99
-figure;plot(x,y,'.');
-figure;plot(x);hold on;plot(y,'r');
+figure; plot(x,y,'.');
+figure; plot(x); hold on; plot(y,'r');
 
 % compute the covariance matrix from some simulated data in 2 different
 % ways
-[data,time]=ni2_activation; 
-[data2,time]=ni2_activation('frequency',11,'latency',0.48); 
-sens=ni2_sensors('type','eeg'); 
-headmodel=ni2_headmodel('type','spherical','nshell',3); 
-leadfield=ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]); 
-leadfield2=ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]); 
+[data,time]=ni2_activation;
+[data2,time]=ni2_activation('frequency',11,'latency',0.48);
+sens=ni2_sensors('type','eeg');
+headmodel=ni2_headmodel('type','spherical','nshell',3);
+leadfield=ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);
+leadfield2=ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);
 
-%way 1
+% way 1
 sensordata=leadfield*data+leadfield2*data2;
 C1=sensordata*sensordata';
 
-%way 2
-sourcecov=[data;data2]*[data;data2]';
+% way 2
+sourcecov=[data; data2]*[data; data2]';
 C2=leadfield*leadfield'   * sourcecov(1,1)   + ...
    leadfield*leadfield2'  * sourcecov(1,2)   + ...
    leadfield2*leadfield'  * sourcecov(2,1)   + ...
@@ -116,25 +116,25 @@ sel=find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
 sel=repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
 
 figure;
-%subplot(1,2,1);plot(t1,sbf(sel(1,:),:));
-subplot(1,2,1);plot(t1,sbfr(sel(1,:),:));
-subplot(1,2,2);plot(t1,s4);
-%subplot(1,2,2);plot(t1,smn(sel(1,:),:));
+%subplot(1,2,1); plot(t1,sbf(sel(1,:),:));
+subplot(1,2,1); plot(t1,sbfr(sel(1,:),:));
+subplot(1,2,2); plot(t1,s4);
+%subplot(1,2,2); plot(t1,smn(sel(1,:),:));
 
 figure;
-subplot(1,2,1);plot(t1,sbf(sel(2,:),:));
-subplot(1,2,2);plot(t1,s2);
-%subplot(1,2,2);plot(t1,smn(sel(2,:),:));
+subplot(1,2,1); plot(t1,sbf(sel(2,:),:));
+subplot(1,2,2); plot(t1,s2);
+%subplot(1,2,2); plot(t1,smn(sel(2,:),:));
 
 figure;
-subplot(1,2,1);plot(t1,sbfr(sel(3,:),:));
-subplot(1,2,2);plot(t1,s1);
-%subplot(1,2,2);plot(t1,smn(sel(3,:),:));
+subplot(1,2,1); plot(t1,sbfr(sel(3,:),:));
+subplot(1,2,2); plot(t1,s1);
+%subplot(1,2,2); plot(t1,smn(sel(3,:),:));
 
 figure;
-subplot(1,2,1);plot(t1,sbf(sel(4,:),:));
-subplot(1,2,2);plot(t1,s3);
-%subplot(1,2,2);plot(t1,smn(sel(4,:),:));
+subplot(1,2,1); plot(t1,sbf(sel(4,:),:));
+subplot(1,2,2); plot(t1,s3);
+%subplot(1,2,2); plot(t1,smn(sel(4,:),:));
 
 
 % compute the beamformer spatial filter with limited data available
@@ -149,28 +149,28 @@ end
 sbf10 = wbf10*sensordata;
 
 figure;
-subplot(2,2,1);plot(t1,sbf(sel(1,:),:)); xlabel('sbf');
-subplot(2,2,2);plot(t1,sbfr(sel(1,:),:)); xlabel('sbfr');
-subplot(2,2,3);plot(t1,sbf10(sel(1,:),:)); xlabel('sbf10');
-subplot(2,2,4);plot(t1,s4); xlabel('simulated source 4');
+subplot(2,2,1); plot(t1,sbf(sel(1,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t1,sbfr(sel(1,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t1,sbf10(sel(1,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t1,s4); xlabel('simulated source 4');
 
 figure;
-subplot(2,2,1);plot(t1,sbf(sel(2,:),:)); xlabel('sbf');
-subplot(2,2,2);plot(t1,sbfr(sel(2,:),:)); xlabel('sbfr');
-subplot(2,2,3);plot(t1,sbf10(sel(2,:),:)); xlabel('sbf10');
-subplot(2,2,4);plot(t1,s2); xlabel('simulated source 2');
+subplot(2,2,1); plot(t1,sbf(sel(2,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t1,sbfr(sel(2,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t1,sbf10(sel(2,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t1,s2); xlabel('simulated source 2');
 
 figure;
-subplot(2,2,1);plot(t1,sbf(sel(3,:),:)); xlabel('sbf');
-subplot(2,2,2);plot(t1,sbfr(sel(3,:),:)); xlabel('sbfr');
-subplot(2,2,3);plot(t1,sbf10(sel(3,:),:)); xlabel('sbf10');
-subplot(2,2,4);plot(t1,s1); xlabel('simulated source 1');
+subplot(2,2,1); plot(t1,sbf(sel(3,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t1,sbfr(sel(3,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t1,sbf10(sel(3,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t1,s1); xlabel('simulated source 1');
 
 figure;
-subplot(2,2,1);plot(t1,sbf(sel(4,:),:)); xlabel('sbf');
-subplot(2,2,2);plot(t1,sbfr(sel(4,:),:)); xlabel('sbfr');
-subplot(2,2,3);plot(t1,sbf10(sel(4,:),:)); xlabel('sbf10');
-subplot(2,2,4);plot(t1,s3); xlabel('simulated source 3');
+subplot(2,2,1); plot(t1,sbf(sel(4,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t1,sbfr(sel(4,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t1,sbf10(sel(4,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t1,s3); xlabel('simulated source 3');
 
 %% depth bias
 
@@ -262,12 +262,12 @@ sel=find(ismember(find(sourcemodel.inside), [2342 2352]));
 sel=repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
 
 figure;
-subplot(1,2,1);plot(t1,sbfr(sel(1,:),:));
-subplot(1,2,2);plot(t1,s1);
+subplot(1,2,1); plot(t1,sbfr(sel(1,:),:));
+subplot(1,2,2); plot(t1,s1);
 
 figure;
-subplot(1,2,1);plot(t1,sbfr(sel(2,:),:));
-subplot(1,2,2);plot(t1,s2);
+subplot(1,2,1); plot(t1,sbfr(sel(2,:),:));
+subplot(1,2,2); plot(t1,s2);
 
 pbf=var(sbfr,[],2);
 pbf=sum(reshape(pbf,3,numel(pbf)/3));
@@ -285,5 +285,3 @@ cfg.nslices=4;
 cfg.slicerange=[5 8];
 cfg.funcolorlim=[0 0.08];
 ft_sourceplot(cfg,source);
-
-

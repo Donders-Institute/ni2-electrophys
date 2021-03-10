@@ -40,10 +40,10 @@ cfg.mne.lambda         = 0;
 cfg.keepleadfield      = 'yes';
 source = ft_sourceanalysis(cfg, data);
 
-figure;plot(source.time,source.avg.mom{2352});legend({'x' 'y' 'z'});
-figure;plot(source.time,source.avg.mom{2342});legend({'x' 'y' 'z'});
-figure;plot(source.time,source.avg.mom{2347});legend({'x' 'y' 'z'});
-figure;plot(source.time,source.avg.mom{2713});legend({'x' 'y' 'z'});
+figure; plot(source.time,source.avg.mom{2352}); legend({'x' 'y' 'z'});
+figure; plot(source.time,source.avg.mom{2342}); legend({'x' 'y' 'z'});
+figure; plot(source.time,source.avg.mom{2347}); legend({'x' 'y' 'z'});
+figure; plot(source.time,source.avg.mom{2713}); legend({'x' 'y' 'z'});
 
 
 [data1,time1]=ni2_activation;
@@ -75,10 +75,10 @@ cfg.mne.lambda         = 0;
 cfg.keepleadfield      = 'yes';
 source_noise = ft_sourceanalysis(cfg, data);
 
-figure;plot(source_noise.time,source_noise.avg.mom{2352},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise.time,source_noise.avg.mom{2342},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise.time,source_noise.avg.mom{2347},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise.time,source_noise.avg.mom{2713},'linewidth', 2);legend({'x' 'y' 'z'});
+figure; plot(source_noise.time,source_noise.avg.mom{2352},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise.time,source_noise.avg.mom{2342},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise.time,source_noise.avg.mom{2347},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise.time,source_noise.avg.mom{2713},'linewidth', 2); legend({'x' 'y' 'z'});
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
@@ -90,16 +90,16 @@ cfg.mne.lambda         = 2;
 cfg.keepleadfield      = 'yes';
 source_noise_reg = ft_sourceanalysis(cfg, data);
 
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2352},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2342},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2347},'linewidth', 2);legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2713},'linewidth', 2);legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2352},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2342},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2347},'linewidth', 2); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2713},'linewidth', 2); legend({'x' 'y' 'z'});
 
 L=cat(2,source_noise_reg.leadfield{source_noise_reg.inside});
 S=cat(1,source_noise_reg.avg.mom{source_noise_reg.inside});
 model=L*S;
 residual=sensordata-model;
-figure;plot(residual');
+figure; plot(residual');
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
@@ -111,16 +111,16 @@ cfg.mne.lambda         = 0.01;
 cfg.keepleadfield      = 'yes';
 source_noise_reg = ft_sourceanalysis(cfg, data);
 
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2352});legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2342});legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2347});legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2713});legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2352}); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2342}); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2347}); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2713}); legend({'x' 'y' 'z'});
 
 L=cat(2,source_noise_reg.leadfield{source_noise_reg.inside});
 S=cat(1,source_noise_reg.avg.mom{source_noise_reg.inside});
 model=L*S;
 residual=sensordata-model;
-figure;plot(residual');
+figure; plot(residual');
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
@@ -134,12 +134,12 @@ cfg.normalize          = 'yes';
 cfg.normalizeparam     = 1;
 source_noise_reg    = ft_sourceanalysis(cfg, data);
 
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2352});legend({'x' 'y' 'z'});
-%figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2342});legend({'x' 'y' 'z'});
-%figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2347});legend({'x' 'y' 'z'});
-figure;plot(source_noise_reg.time,source_noise_reg.avg.mom{2713});legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2352}); legend({'x' 'y' 'z'});
+%figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2342}); legend({'x' 'y' 'z'});
+%figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2347}); legend({'x' 'y' 'z'});
+figure; plot(source_noise_reg.time,source_noise_reg.avg.mom{2713}); legend({'x' 'y' 'z'});
 
-figure;plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2352});legend({'x' 'y' 'z'});
-%figure;plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2342});legend({'x' 'y' 'z'});
-%figure;plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2347});legend({'x' 'y' 'z'});
-figure;plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2713});legend({'x' 'y' 'z'});
+figure; plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2352}); legend({'x' 'y' 'z'});
+%figure; plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2342}); legend({'x' 'y' 'z'});
+%figure; plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2347}); legend({'x' 'y' 'z'});
+figure; plot(source_noise_lfnorm.time,source_noise_lfnorm.avg.mom{2713}); legend({'x' 'y' 'z'});

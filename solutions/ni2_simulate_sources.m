@@ -1,4 +1,4 @@
-%% noiseless case.
+%% noiseless case
 
 [data1,time1] = ni2_activation;
 [data2,time2] = ni2_activation('frequency',11,'latency',0.48);
@@ -28,7 +28,7 @@ cfg.mne.lambda         = 0;
 cfg.keepleadfield      = 'yes';
 source = ft_sourceanalysis(cfg, data);
 
-%% with noise.
+%% with noise
 
 [data1,time1] = ni2_activation;
 [data2,time2] = ni2_activation('frequency',11,'latency',0.48);
@@ -95,4 +95,3 @@ source_noise = ft_sourceanalysis(cfg, data);
 cfg.normalize = 'yes';
 cfg.normalizeparam = 1;
 source_noise_lfnorm = ft_sourceanalysis(cfg, data);
-

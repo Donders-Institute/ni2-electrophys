@@ -27,11 +27,11 @@ assert(all(sensordata(ref,:)==0));
 topo_observed = sensordata(:,500);
 ni2_topoplot(sens, topo_observed);
 
-data        = []; 
-data.avg    = sensordata; 
-data.time   = time; 
-data.label  = sens.label; 
-data.elec   = sens; 
+data        = [];
+data.avg    = sensordata;
+data.time   = time;
+data.label  = sens.label;
+data.elec   = sens;
 data.dimord ='chan_time';
 
 % this is what I think Sarang means, i.e. data with an implicitref present,
@@ -58,13 +58,13 @@ montage1.labelnew = data.label;
 data_avg      = ft_apply_montage(data, montage1);
 data_avg.elec = ft_apply_montage(data.elec, montage1);
 
-cfg            = []; 
-cfg.gridsearch = 'yes'; 
-cfg.model      = 'regional'; 
-cfg.headmodel  = headmodel; 
+cfg            = [];
+cfg.gridsearch = 'yes';
+cfg.model      = 'regional';
+cfg.headmodel  = headmodel;
 cfg.sourcemodel = sourcemodel;
-cfg.latency    = [0.49 0.51]; 
-cfg.nonlinear  = 'yes'; 
+cfg.latency    = [0.49 0.51];
+cfg.nonlinear  = 'yes';
 cfg.numdipoles = 1;
 dip            = ft_dipolefitting(cfg, data);
 dip_avg        = ft_dipolefitting(cfg, data_avg);
@@ -85,4 +85,3 @@ dataj_avg.elec.elecpos = sens_jittered.chanpos;
 dipj_avg = ft_dipolefitting(cfg, dataj_avg);
 dataj_svd.elec.elecpos = sens_jittered.chanpos;
 dipj_svd = ft_dipolefitting(cfg, dataj_svd);
-

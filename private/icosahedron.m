@@ -52,8 +52,8 @@ dhk = [
 
 pnt = zeros(12, 3);
 
-rho=0.4*sqrt(5);
-phi=2*pi*(0:4)/5;
+rho = 0.4*sqrt(5);
+phi = 2*pi*(0:4)/5;
 
 pnt( 1, :) = [0 0  1];          % top point
 

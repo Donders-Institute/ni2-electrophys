@@ -25,15 +25,15 @@ axis([-0.6 0.6 -0.6 0.6]);
 axis off;
 grid off;
 
-th = text(0,-0.6,sprintf('time=%s',num2str(time(1))));
+th = text(0,-0.6,sprintf('time=% s',num2str(time(1))));
 
 clim = [min(dat(:)) max(dat(:))];
 for k = 1:4:size(dat,2)
   Zi = griddata(x', y', dat(:,k), xi, yi, 'v4'); % interpolate the topographic data
   Zi(isnan(zi)) = nan;
   set(h, 'CData', Zi);caxis(clim);drawnow;
-  %pause(0.05);
-  set(th, 'string', sprintf('time=%s',num2str(time(k),'%1.3f')));
+  % pause(0.05);
+  set(th, 'string', sprintf('time=% s',num2str(time(k),'% 1.3f')));
 end
 
 
@@ -123,7 +123,7 @@ if strcmp(interplim, 'electrodes'),
 elseif strcmp(interplim, 'mask') && ~isempty(mask),
   hlim = [inf -inf];
   vlim = [inf -inf];
-  for i=1:length(mask)
+  for i = 1:length(mask)
     hlim = [min([hlim(1); mask{i}(:,1)*xScaling+hpos]) max([hlim(2); mask{i}(:,1)*xScaling+hpos])];
     vlim = [min([vlim(1); mask{i}(:,2)*yScaling+vpos]) max([vlim(2); mask{i}(:,2)*yScaling+vpos])];
   end
@@ -145,8 +145,8 @@ end
 if ~isempty(mask)
   % convert the mask into a binary image
   maskimage = false(gridscale);
-  %hlim      = [min(chanX) max(chanX)];
-  %vlim      = [min(chanY) max(chanY)];
+  % hlim      = [min(chanX) max(chanX)];
+  % vlim      = [min(chanY) max(chanY)];
   xi        = linspace(hlim(1), hlim(2), gridscale);   % x-axis for interpolation (row vector)
   yi        = linspace(vlim(1), vlim(2), gridscale);   % y-axis for interpolation (row vector)
   [Xi,Yi]   = meshgrid(xi', yi);
@@ -159,7 +159,7 @@ if ~isempty(mask)
     % NOTE: if you set hpos and/or vpos, newpoints is not empty, but nothing
     % needs to be fixed (this fixme screws up things, then)
   end
-  for i=1:length(mask)
+  for i = 1:length(mask)
     mask{i}(:,1) = mask{i}(:,1)*xScaling+hpos;
     mask{i}(:,2) = mask{i}(:,2)*yScaling+vpos;
     mask{i}(end+1,:) = mask{i}(1,:);                   % force them to be closed
@@ -190,7 +190,7 @@ if flagNaN && strcmp(interpmethod,'v4')
   chanY(NaNind) = [];
 end
 
-%interpolate data
+% interpolate data
 xi         = linspace(hlim(1), hlim(2), gridscale);       % x-axis for interpolation (row vector)
 yi         = linspace(vlim(1), vlim(2), gridscale);       % y-axis for interpolation (row vector)
 [Xi,Yi,Zi] = griddata(chanX', chanY, dat(:,1), xi', yi, interpmethod); % interpolate the topographic data
@@ -205,7 +205,7 @@ if exist('maskimagetmp')
 end
 
 % plot the outline of the head, ears and nose
-for i=1:length(outline)
+for i = 1:length(outline)
   xval = outline{i}(:,1) * xScaling  + hpos;
   yval = outline{i}(:,2) * yScaling + vpos;
   ft_plot_vector(xval, yval, 'Color','k', 'LineWidth',2, 'tag', tag, 'parent', parent);
@@ -231,11 +231,11 @@ if strcmp(style,'surf') || strcmp(style,'surfiso')
   if ~isempty(parent)
     set(h, 'Parent', parent);
   end
-  %if exist('maskimagetmp')
+  % if exist('maskimagetmp')
   %  set(h, 'facealpha', 'flat');
   %  set(h, 'alphadatamapping', 'scaled');
   %  set(h, 'alphadata', maskimagetmp);
-  %end
+  % end
 end
 
 % Plot filled contours

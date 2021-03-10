@@ -9,7 +9,7 @@ leadfield = ni2_leadfield(sens, headmodel, diploc);
 
 %% page 2
 
-dipmom = [1;0;0];
+dipmom = [1; 0; 0];
 sensordata = leadfield*dipmom*data;
 
 ni2_topomovie(sens, sensordata, time);

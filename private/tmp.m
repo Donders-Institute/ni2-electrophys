@@ -22,7 +22,7 @@ critval = 0.1;
 
 % the remaining points have to be investigated with more attention
 sel = find(bool);
-for i=1:length(sel)
+for i = 1:length(sel)
   contourx = contour(:,1) - pos(sel(i),1);
   contoury = contour(:,2) - pos(sel(i),2);
   angle = atan2(contoury, contourx);
@@ -37,7 +37,7 @@ function x = my_unwrap(x)
 % with hopefully the same functionality
 d    = diff(x);
 indx = find(abs(d)>pi);
-for i=indx(:)'
+for i = indx(:)'
   if d(i)>0
     x((i+1):end) = x((i+1):end) - 2*pi;
   else

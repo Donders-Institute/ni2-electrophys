@@ -34,13 +34,13 @@ side = zeros(n, 1);
 side(val >  tolerance) =  1;
 side(val < -tolerance) = -1;
 
-%if val>tolerance
-%  side=1;
-%elseif val<-tolerance
+% if val>tolerance
+%  side = 1;
+% elseif val<-tolerance
 %  side=-1;
-%else
-%  side=0;
-%end
+% else
+%  side = 0;
+% end
 
 % subfunction without overhead to speed up
 function c = crossproduct(a, b)

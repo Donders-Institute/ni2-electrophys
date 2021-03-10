@@ -22,7 +22,7 @@
 /****************************************************************************/
 double dot(double* a, double* b)
 {
-  double ss=0;
+  double ss = 0;
   ss += a[0]*b[0];
   ss += a[1]*b[1];
   ss += a[2]*b[2];
@@ -47,7 +47,7 @@ double determinant(double* a, double* b, double* c)
 /****************************************************************************/
 double pdist(double* v1)
 {
-  double ss=0;
+  double ss = 0;
   ss += v1[0]*v1[0];
   ss += v1[1]*v1[1];
   ss += v1[2]*v1[2];
@@ -57,7 +57,7 @@ double pdist(double* v1)
 /****************************************************************************/
 double ppdist(double* v1, double* v2)
 {
-  double ss=0;
+  double ss = 0;
   ss += (v1[0]-v2[0])*(v1[0]-v2[0]);
   ss += (v1[1]-v2[1])*(v1[1]-v2[1]);
   ss += (v1[2]-v2[2])*(v1[2]-v2[2]);
@@ -68,9 +68,9 @@ double ppdist(double* v1, double* v2)
 double plinproj(double* l1, double* l2, double* r, double *proj, int flag)
 {
   double l12[3], l1r[3];
-  double l12_l=0, l1r_l=0, la=0;
+  double l12_l = 0, l1r_l = 0, la = 0;
   int k;
-  for (k=0; k<3; k++)
+  for (k = 0; k<3; k++)
   {
     l12[k]=l2[k]-l1[k];
     l1r[k]=r[k]-l1[k];
@@ -99,10 +99,10 @@ double plinproj(double* l1, double* l2, double* r, double *proj, int flag)
   la = dot(l12,l1r)/(l12_l*l12_l);
   if (flag && la<0)
     /* intended projection point would lie before begin of linepiece */
-    la=0;
+    la = 0;
   else if (flag && la>1)
     /* intended projection point would lie after end of linepiece */
-    la=1;
+    la = 1;
   /* compute projection point along line through l1 and l2 */
   proj[0] = l1[0] + la*l12[0];
   proj[1] = l1[1] + la*l12[1];
@@ -188,11 +188,11 @@ void ltrisect(double* v1, double* v2, double* v3, double* l1, double* l2, double
 void lmoutr(double* v1, double* v2, double* v3, double* r, double *la, double *mu, double *ze)
 {
   double a[3], b[3], c[3], d[3];
-  double a_l=0, b_l=0, c_l=0, d_l=0;
+  double a_l = 0, b_l = 0, c_l = 0, d_l = 0;
   double det, det_la, det_mu, det_ze;
   int k;
 
-  for (k=0; k<3; k++)
+  for (k = 0; k<3; k++)
   {
     a[k] = r[k]-v1[k];
     b[k] = v2[k]-v1[k];
@@ -261,7 +261,7 @@ int ptriside(double* v1, double* v2, double* v3, double *r)
   double val;
   double a[3], b[3], c[3], d[3];
   int k;
-  for (k=0; k<3; k++)
+  for (k = 0; k<3; k++)
   {
     a[k] = r[k]-v1[k];
     b[k] = v2[k]-v1[k];
@@ -281,7 +281,7 @@ int ptriside(double* v1, double* v2, double* v3, double *r)
 double solang(double *r1, double *r2, double *r3, int *on_triangle)
 {
   double cp23_x,cp23_y,cp23_z,n1,n2,n3,ip12,ip23,ip13,nom,den;
-  *on_triangle=0;
+  *on_triangle = 0;
   cp23_x = r2[1] * r3[2] - r2[2] * r3[1];
   cp23_y = r2[2] * r3[0] - r2[0] * r3[2];
   cp23_z = r2[0] * r3[1] - r2[1] * r3[0];
@@ -295,7 +295,7 @@ double solang(double *r1, double *r2, double *r3, int *on_triangle)
   den = n1*n2*n3 + ip12*n3 + ip23*n1 + ip13*n2;
   if (nom==0 & den<=0)
   {
-    *on_triangle=1;
+    *on_triangle = 1;
     return 0;
   }
   return -2.*atan2 (nom,den);

@@ -7,7 +7,7 @@ if nargin<3
 end
 
 if exist('seed','var') && ~isempty(seed)
-  ftFuncRandomseed=randomseed(seed);
+  ftFuncRandomseed = randomseed(seed);
 end
 
 if numel(Nx)>1

@@ -15,4 +15,4 @@ for k = 1:n
  
   datnew(indx1, indx2) = dat(:,:,k);
 end
-figure;imagesc(datnew);axis xy
+figure; imagesc(datnew);axis xy

@@ -7,23 +7,23 @@ load ~/teaching/tlock.mat
 
 % 2) Sensor positions
 
-elec=ft_read_sens('standard_1005.elc');
-elec=ft_convert_units(elec,'cm');
+elec = ft_read_sens('standard_1005.elc');
+elec = ft_convert_units(elec,'cm');
 
 % 3) Head model
 % For EEG, we'll be interested to test the effect of using the more
 % accurate BEM versus a less accurate 3sphere and 1 sphere model.
 load standard_bem;
-vol=ft_convert_units(vol,'cm');
+vol = ft_convert_units(vol,'cm');
 vol_bem = vol;
 
 cfg=[];
 cfg.method = 'concentricspheres';
-vol_3sph=ft_prepare_headmodel(cfg,vol);
+vol_3sph = ft_prepare_headmodel(cfg,vol);
 
 cfg=[];
 cfg.method = 'singlesphere';
-vol_1sph=ft_prepare_headmodel(cfg,vol.bnd(1));
+vol_1sph = ft_prepare_headmodel(cfg,vol.bnd(1));
 
 % 4) Grid points in the head
 load standard_grid3d8mm;  % 'grid' with 5302 points inside MNI head
@@ -74,7 +74,7 @@ source_1sph = ft_sourceanalysis(cfg, tlock)
 
 load standard_mri
 source_3sph.anatomy = mri.anatomy;
-source_3sph=rmfield(source_3sph,'anatomy');
+source_3sph = rmfield(source_3sph,'anatomy');
 
 cfg=[];
 cfg.funparameter = 'avg.pow';

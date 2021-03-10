@@ -10,7 +10,7 @@ y=[2 1]';
 % For any z, we can find x and y that solve the system
 
 % Try z = 0
-% x=2, y=1;
+% x = 2, y = 1;
 
 % Try z = 3;
 % x=-1, y = -2
@@ -19,13 +19,13 @@ y=[2 1]';
 % and y that solves the equations?
 
 % Try z = 2;
-% x=0, y = -1
+% x = 0, y = -1
 
-snorm1=sqrt(s(1)^2+s(2)^2+s(3)^2)
-snorm2=sqrt(sum(s(:).^2))
-snorm3=norm(s)
+snorm1 = sqrt(s(1)^2+s(2)^2+s(3)^2)
+snorm2 = sqrt(sum(s(:).^2))
+snorm3 = norm(s)
 
-%three test solutions are:
+% three test solutions are:
 
 s=[2 1 0];
 norm(s)
@@ -36,13 +36,13 @@ norm(s)
 
 % pinv
 
-Lpinv=L'*(L*L')^-1
-Lpinv=pinv(L)
+Lpinv = L'*(L*L')^-1
+Lpinv = pinv(L)
 
-Lpinv1=L\eye(2)
+Lpinv1 = L\eye(2)
 
 % Now try pinv
-s_mn=Lpinv*[2 1]'
+s_mn = Lpinv*[2 1]'
 % [1 0 1]
 lf*smn
 
@@ -66,29 +66,29 @@ L*(s1+s3)
 
 % add sensor noise
 n=[.1 -.3]'
-y_n=y+n
+y_n = y+n
 
-Lpinv=L'*(L*L')^-1
+Lpinv = L'*(L*L')^-1
 
 Lpinv*y_n
 norm(Lpinv*y_n)
 
-Rn=diag(diag(n*n'))
-% Rn=n*n'
+Rn = diag(diag(n*n'))
+% Rn = n*n'
 
-Lpinv_reg=L'*(L*L'+Rn)^-1;
+Lpinv_reg = L'*(L*L'+Rn)^-1;
 Lpinv_reg*y_n;
 norm(Lpinv_reg*y_n)
 
-Lpinv_reg=L'*(L*L'+2*Rn)^-1;
+Lpinv_reg = L'*(L*L'+2*Rn)^-1;
 Lpinv_reg*y_n;
 norm(Lpinv_reg*y_n)
 
-Lpinv_reg=L'*(L*L'+200*Rn)^-1;
+Lpinv_reg = L'*(L*L'+200*Rn)^-1;
 Lpinv_reg*y_n;
 norm(Lpinv_reg*y_n)
 
-Lpinv_reg=L'*(L*L'+2e15*Rn)^-1;
+Lpinv_reg = L'*(L*L'+2e15*Rn)^-1;
 Lpinv_reg*y_n;
 norm(Lpinv_reg*y_n)
 
@@ -98,21 +98,21 @@ norm(Lpinv_reg*y_n)
 L=[4 0 1;  0 4 1];
 y=[1 1]';
 
-Lpinv=L'*(L*L')^-1;
-s_mn=Lpinv*y
+Lpinv = L'*(L*L')^-1;
+s_mn = Lpinv*y
 
 % compute colnorm
-Lcolnorm=sqrt(sum(L.^2,1))
-% Lcolnorm=sum(L.^2,1)
+Lcolnorm = sqrt(sum(L.^2,1))
+% Lcolnorm = sum(L.^2,1)
 
-% R_s=diag(Lcolnorm.^2)
-R_s=diag(Lcolnorm)
+% R_s = diag(Lcolnorm.^2)
+R_s = diag(Lcolnorm)
 
-Lpinv_dw=inv(R_s)*L'*(L*inv(R_s)*L')^-1
+Lpinv_dw = inv(R_s)*L'*(L*inv(R_s)*L')^-1
 
 Lpinv_dw*y
 
-L_normed=L./repmat(Lcolnorm,2,1)
+L_normed = L./repmat(Lcolnorm,2,1)
 
 pinv(L_normed)*y
 
@@ -124,10 +124,10 @@ pinv(L_normed)*y
 %% First some matrix inversion
 % 
 % % Invert square matrix
-% a=diag([1 2 3 4])
+% a = diag([1 2 3 4])
 % inv(a)
 % 
-% b=[1 2;3 4]
+% b=[1 2; 3 4]
 % inv(b)
 % 
 % 1/[b(1,1)*b(2,2)-b(1,2)*b(2,1)] * [b(2,2) -b(1,2); -b(2,1) b(1,1)]
@@ -138,18 +138,18 @@ pinv(L_normed)*y
 % 
 % 
 % % Verify that pinv is l'*inv(l*l')
-% ci=pinv(c);
+% ci = pinv(c);
 % ci*c
 % c*ci
 % 
 % d=[1 2; 3 4; 5 6]
-% di=pinv(d)
+% di = pinv(d)
 % 
 % % is pinv still equal to l'*inv(l*l')
 % 
 % % what happens if lf not independent rows?
-% e=[1 10;3 30]
-% e=[1 10;3 30.0001]
+% e=[1 10; 3 30]
+% e=[1 10; 3 30.0001]
 % 
 % e(1,:)=[1 4 5];
 % e(2,:)=[2 -4 -3];
@@ -177,25 +177,25 @@ pinv(L_normed)*y
 % % than for other sources
 % 
 % strue=[3; 5; 7];
-% c=diag([3 1 1]);
+% c = diag([3 1 1]);
 % 
 % sest=[1; 5; 9]
-% a=sest-strue;
+% a = sest-strue;
 % a'*c*a
 % 
 % sest=[2; 6; 10]
-% a=sest-strue;
+% a = sest-strue;
 % a'*c*a
 % 
 % % weight 2nd source more
-% c=diag([1 3 1]);
+% c = diag([1 3 1]);
 % 
 % sest=[1; 5; 9]
-% a=sest-strue;
+% a = sest-strue;
 % a'*c*a
 % 
 % sest=[2; 6; 10]
-% a=sest-strue;
+% a = sest-strue;
 % a'*c*a
 % 
 
@@ -210,7 +210,7 @@ load ~/teaching/megdatanoisenoise.mat
 % 2) Sensor positions
 
 load('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/dataFIC')
-datanoisenoise.grad=dataFIC.grad;
+datanoisenoise.grad = dataFIC.grad;
 clear dataFIC
 save ~/teaching/megdatanoisenoise.mat datanoisenoise
 
@@ -223,16 +223,16 @@ load ~/teaching/megdatanoisenoise.mat
 % For EEG, we'll be interested to test the effect of using the more
 % accurate BEM versus a less accurate 3sphere and 1 sphere model.
 load('/home/common/matlab/fieldtrip/data/ftp/tutorial/headmodel_meg/vol.mat')
-vol=ft_convert_units(vol,'cm');
+vol = ft_convert_units(vol,'cm');
 
 cfg=[];
 cfg.method = 'singlesphere';
-vol_1sph=ft_prepare_headmodel(cfg,vol.bnd);
+vol_1sph = ft_prepare_headmodel(cfg,vol.bnd);
 
 % 4) Grid points in the head
 load meg_leadfields.mat
 
-grid=rmfield(grid2,'leadfield');
+grid = rmfield(grid2,'leadfield');
 
 cfg = [];
 cfg.grid = grid;
@@ -244,12 +244,12 @@ grid_1sph = ft_prepare_leadfield(cfg, datanoisenoise);
 cfg=[];
 cfg.keeptrials='yes';
 cfg.covariance='yes';
-tlock_tr=ft_timelockanalysis(cfg,datanoisenoise);
+tlock_tr = ft_timelockanalysis(cfg,datanoisenoise);
 
 cfg=[];
 cfg.covariance='yes';
 cfg.covariancewindow = [0 0.3];
-tlock_avg=ft_timelockanalysis(cfg,datanoisenoise);
+tlock_avg = ft_timelockanalysis(cfg,datanoisenoise);
 
 % Now we can compute a source inversion, with our three different
 % leadfields based on the three different head model options
@@ -260,7 +260,7 @@ cfg.vol = vol;
 cfg.snr = 1;
 mne_grid2_avg = ft_sourceanalysis(cfg, tlock_avg);
 
-for ll=1:size(mne_grid2_avg.pos,1)
+for ll = 1:size(mne_grid2_avg.pos,1)
   mne_grid2_avg.avg.normpow(ll,:) = mne_grid2_avg.avg.pow(ll,:)/trace(mne_grid2_avg.avg.noisecov{ll});
 end
 
@@ -269,7 +269,7 @@ cfg.funparameter = 'avg.normpow';
 cfg.interactive = 'yes';
 ft_sourceplot(cfg,mne_grid2_avg);
 
-mri=ft_read_mri('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/Subject01.mri');
+mri = ft_read_mri('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/Subject01.mri');
 mne_grid2_avg.anatomy = mri.anatomy;
 anat
 
@@ -300,5 +300,5 @@ cfg.taper = 'hanning';
 cfg.toi = [0:.1:2];
 cfg.foi = 5:2.5:70;
 cfg.t_ftimwin = .4*ones(size(cfg.foi));;
-freq=ft_freqanalysis(cfg,datanoisenoise);
+freq = ft_freqanalysis(cfg,datanoisenoise);
 

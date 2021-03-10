@@ -2,7 +2,7 @@ function x = pinknoise(Nx,seed)
 % function x = pinknoise(Nx,seed)
 
 if exist('seed','var')
-  ftFuncRandomseed=randomseed(seed);
+  ftFuncRandomseed = randomseed(seed);
 end
 B = [0.049922035 -0.095993537 0.050612699 -0.004408786];
 A = [1 -2.494956002   2.017265875  -0.522189400];

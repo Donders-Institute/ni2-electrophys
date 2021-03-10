@@ -46,7 +46,7 @@ pnt(:,3) = pnt(:,3)-mean(pnt(:,3),1);
 
 % compute triangle normals
 % nrm_dhk = zeros(ndhk, 3);
-% for i=1:ndhk
+% for i = 1:ndhk
 %   v2 = pnt(dhk(i,2),:) - pnt(dhk(i,1),:);
 %   v3 = pnt(dhk(i,3),:) - pnt(dhk(i,1),:);
 %   nrm_dhk(i,:) = cross(v2, v3);
@@ -61,7 +61,7 @@ nrm_dhk = cross(v2, v3);
 if strcmp(opt, 'vertex')
   % compute vertex normals
   nrm_pnt = zeros(npnt, 3);
-  for i=1:ndhk
+  for i = 1:ndhk
     nrm_pnt(dhk(i,1),:) = nrm_pnt(dhk(i,1),:) + nrm_dhk(i,:);
     nrm_pnt(dhk(i,2),:) = nrm_pnt(dhk(i,2),:) + nrm_dhk(i,:);
     nrm_pnt(dhk(i,3),:) = nrm_pnt(dhk(i,3),:) + nrm_dhk(i,:);

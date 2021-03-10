@@ -23,13 +23,13 @@ switch type
       in(sqrt(x.^2+y.^2+z.^2)<=9) = true;
       
       pos        = [x(:) y(:) z(:)];
-      %inside     = find(in);
-      %outside    = find(in==0);
+      % inside     = find(in);
+      % outside    = find(in==0);
       clear x y z
       
       sourcemodel.pos     = pos;
-      %sourcemodel.inside  = inside;
-      %sourcemodel.outside = outside;
+      % sourcemodel.inside  = inside;
+      % sourcemodel.outside = outside;
       sourcemodel.inside  = in(:);
       sourcemodel.dim     = [numel(ax) numel(ax) numel(ax(ax>-1))];
     else

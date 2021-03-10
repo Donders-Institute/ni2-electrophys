@@ -72,7 +72,7 @@ switch method
     [pos, tri] = mesh_tetrahedron;
     if r_tetra>0
       % perform an n-fold refinement
-      for i=1:r_tetra
+      for i = 1:r_tetra
         [pos, tri] = refine(pos, tri, 'banks');
       end
       % scale all vertices to the unit sphere
@@ -83,7 +83,7 @@ switch method
     [pos, tri] = mesh_icosahedron;
     if r_ico>0
       % perform an n-fold refinement
-      for i=1:r_ico
+      for i = 1:r_ico
         [pos, tri] = refine(pos, tri, 'banks');
       end
       % scale all vertices to the unit sphere
@@ -94,7 +94,7 @@ switch method
     [pos, tri] = mesh_octahedron;
     if r_octa>0
       % perform an n-fold refinement
-      for i=1:r_octa
+      for i = 1:r_octa
         [pos, tri] = refine(pos, tri, 'banks');
       end
       % scale all vertices to the unit sphere
@@ -118,7 +118,7 @@ function [pos, tri] = ksphere(N)
 %
 % See also http://www.math.niu.edu/~rusin/known-math/97/spherefaq
 
-for k=1:N
+for k = 1:N
   h = -1 + 2*(k-1)/(N-1);
   theta(k) = acos(h);
   if k==1 || k==N
@@ -178,13 +178,13 @@ function [pos, tri] = msphere(N)
 % resting places as the centers of your holes.)
 %
 % In standard spherical coordinates (phi, theta), place your first point
-% at phi=0 (theta undefined there). Subsequent points are placed at
-% phi = (k/M) pi   (k=1, 2, ..., M), where M is an integer close to
-% (pi/4) sqrt(N) (say M=100); take points with theta coordinates
-% theta= (j/Q) (2 pi) (j=1, 2, ..., Q) where  Q is an integer close to
+% at phi = 0 (theta undefined there). Subsequent points are placed at
+% phi = (k/M) pi   (k = 1, 2, ..., M), where M is an integer close to
+% (pi/4) sqrt(N) (say M = 100); take points with theta coordinates
+% theta= (j/Q) (2 pi) (j = 1, 2, ..., Q) where  Q is an integer close to
 % 2 M sin(phi). This gives two poles and M-1 bands of points having
-% between 6 and  2M points on them. Taking M=100 gives 12731 points;
-% perhaps M=106 or so would match your criteria better.
+% between 6 and  2M points on them. Taking M = 100 gives 12731 points;
+% perhaps M = 106 or so would match your criteria better.
 %
 % (These angles are in radians of course.)
 
@@ -201,10 +201,10 @@ while (1)
   th  = 0;
   
   M = round((pi/4)*sqrt(N)) + increaseM;
-  for k=1:M
+  for k = 1:M
     newphi = (k/M)*pi;
     Q = round(2*M*sin(newphi));
-    for j=1:Q
+    for j = 1:Q
       phi(end+1) = newphi;
       th(end+1)  = (j/Q)*2*pi;
       % in case of even number of contours
@@ -226,7 +226,7 @@ while (1)
     break;
   else
     increaseM = increaseM+1;
-    % fprintf('increasing M by %d\n', increaseM);
+    % fprintf('increasing M by % d\n', increaseM);
   end
 end
 

@@ -52,7 +52,7 @@ case 'banks'
   pntr(1:npnt,:) = pnt;         % insert the original vertices
   current = npnt;
 
-  for i=1:ndhk
+  for i = 1:ndhk
 
     if ~insert(dhk(i,1),dhk(i,2))
       current = current + 1;

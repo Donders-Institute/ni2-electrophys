@@ -40,7 +40,7 @@ data.dimord ='chan_time';
 montage2.tra = u(:,1:end-1)';
 montage2.labelold = data.label;
 for k = 1:size(montage2.tra,1)
-  montage2.labelnew{k,1} = sprintf('comp%02d',k);
+  montage2.labelnew{k,1} = sprintf('comp% 02d',k);
 end
 data_svd      = ft_apply_montage(data, montage2);
 data_svd.elec = ft_apply_montage(data.elec, montage2);
@@ -70,8 +70,8 @@ dip            = ft_dipolefitting(cfg, data);
 dip_avg        = ft_dipolefitting(cfg, data_avg);
 dip_svd        = ft_dipolefitting(cfg, data_svd);
 
-%ni2_topoplot(sens,dip.Vmodel(:,6));
-%ni2_topoplot(sens,dip.Vdata(:,6));
+% ni2_topoplot(sens,dip.Vmodel(:,6));
+% ni2_topoplot(sens,dip.Vdata(:,6));
 
 sens_jittered = ni2_sensors('type', 'eeg', 'jitter', 0.1, 'n', 64);
 

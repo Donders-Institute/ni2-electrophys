@@ -33,7 +33,7 @@ switch type
     sens.chanpos = chanpos;
     sens.elecpos = chanpos;
     for k = 1:size(chanpos,1)
-      sens.label{k,1}    = sprintf('eeg%02d', k);
+      sens.label{k,1}    = sprintf('eeg% 02d', k);
       sens.chantype{k,1} = 'eeg';
     end
     sens = ft_datatype_sens(sens);
@@ -55,7 +55,7 @@ switch type
     sens.coilori = coilori;
     sens.tra     = eye(nchan);
     for k = 1:nchan
-      sens.label{k,1}    = sprintf('meg%03d', k);
+      sens.label{k,1}    = sprintf('meg% 03d', k);
       sens.chantype{k,1} = 'megmag';
     end
     sens = ft_datatype_sens(sens);
@@ -77,7 +77,7 @@ switch type
     sens.coilori = [coilori; -coilori];
     sens.tra     = [eye(nchan) eye(nchan)];
     for k = 1:nchan
-      sens.label{k,1}    = sprintf('meg%03d', k);
+      sens.label{k,1}    = sprintf('meg% 03d', k);
       sens.chantype{k,1} = 'meggrad';
     end
     sens = ft_datatype_sens(sens);
@@ -95,6 +95,6 @@ switch type
   case 'meg_neuromag306'
     load('neuromag306');
   otherwise
-    error('unsupported type %s', type);
+    error('unsupported type % s', type);
 end
  

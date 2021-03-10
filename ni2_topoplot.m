@@ -26,7 +26,7 @@ topo = topo(:);
 
 % do another sanity check on the topo
 if numel(topo)~=size(sens.chanpos,1)
-  %error('the number of data points in the topography is different from the number of channels');
+  % error('the number of data points in the topography is different from the number of channels');
 end
 
 % create a data structure that FieldTrip can deal with
@@ -42,7 +42,7 @@ end
 
 if ~isfield(cfg, 'layout')
   % create layout
-  if strncmp(sens.chantype{1}, 'meg', 3);
+  if strncmp(sens.chantype{1}, 'meg', 3)
     tmpcfg.grad = sens;
   else
     tmpcfg.elec = sens;
@@ -50,4 +50,4 @@ if ~isfield(cfg, 'layout')
   cfg.layout = ft_prepare_layout(tmpcfg);
 end
 
-figure;ft_topoplotER(cfg, data);
+figure; ft_topoplotER(cfg, data);

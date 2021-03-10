@@ -16,7 +16,7 @@ function [X, Y, Z, pnt1, dhk1, pnt2, dhk2] = intersect_plane(pnt, dhk, v1, v2, v
 npnt = size(pnt,1);
 ndhk = size(dhk,1);
 % side = zeros(npnt,1);
-% for i=1:npnt
+% for i = 1:npnt
 %   side(i) = ptriside(v1, v2, v3, pnt(i,:));
 % end
 side = ptriside(v1, v2, v3, pnt);
@@ -26,7 +26,7 @@ indx = find(abs(sum(side(dhk),2))~=3);
 cnt1 = zeros(length(indx), 3);
 cnt2 = zeros(length(indx), 3);
 
-for i=1:length(indx)
+for i = 1:length(indx)
   cur = dhk(indx(i),:);
   tmp = side(cur);
   l1 = pnt(cur(1),:);
@@ -95,9 +95,9 @@ end
 
 function [newtri] = tri_reindex(tri)
 
-%this function reindexes tri such that they run from 1:number of unique vertices
+% this function reindexes tri such that they run from 1:number of unique vertices
 
 newtri       = tri;
 [srt, indx]  = sort(tri(:));
-tmp          = cumsum(double(diff([0;srt])>0));
+tmp          = cumsum(double(diff([0; srt])>0));
 newtri(indx) = tmp;

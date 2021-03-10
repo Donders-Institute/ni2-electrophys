@@ -17,6 +17,7 @@ plot(time2,data2,'r');
 % evaluation of different parameter settings
 [testdata, testtime] = ni2_activation('frequency', 5,  'phase', pi, 'latency', 3, 'length', 5, 'ncycle', 12, 'powerup', 1, 'fsample', 1000);
 figure; plot(testtime, testdata); hold on;
+
 [testdata, testtime] = ni2_activation('frequency', 10, 'phase', 0, 'latency', 0.8, 'length', 1, 'ncycle', 10, 'powerup', 1, 'fsample', 1000);
 plot(testtime, testdata);
 
@@ -35,14 +36,15 @@ datamix2 = sum(datacombined,1);
 datamix3 = [1 1]*datacombined;
 
 mix = [1 1];
-datamix3 = mix*datacombined;
-assert(isequal(datamix1, datamix2));
-assert(isequal(datamix1, datamix3));
-assert(isequal(datamix2, datamix3));
+datamix4 = mix*datacombined;
+
+assert(isequal(datamix1, datamix4));
+assert(isequal(datamix2, datamix4));
+assert(isequal(datamix3, datamix4));
 
 %% page 6
 
-mix = [0 1;0.1 0.9;0.25 0.75;0.5 0.5;0.75 0.25;0.9 0.1;1 0];
+mix = [0 1; 0.1 0.9; 0.25 0.75; 0.5 0.5; 0.75 0.25; 0.9 0.1; 1 0];
 datamix = mix * datacombined;
 figure; plot(time, datamix+repmat((1:7)',[1 1000]));
 
@@ -53,8 +55,9 @@ figure; plot(time, datamix+repmat((1:7)',[1 1000]));
 
 headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
 sens = ni2_sensors('type', 'eeg');
+
 figure; hold on;
-ft_plot_vol(headmodel,'edgecolor','none');
+ft_plot_headmodel(headmodel,'edgecolor','none');
 ft_plot_sens(sens);
 
 dippar1 = [0 0 6 1 0 0];
@@ -77,17 +80,18 @@ figure; plot(leadfield1./leadfield2);
 ni2_topoplot(sens, leadfield1*2);
 ni2_topoplot(sens, leadfield2);
 
-dippar3 = [0 0 5.9 1 0 0;0 0 6.1 1 0 0];
+dippar3 = [0 0 5.9 1 0 0; 0 0 6.1 1 0 0];
 leadfield3 = ni2_leadfield(sens, headmodel, dippar3);
-topo=leadfield3*[1;1];
+topo = leadfield3*[1; 1];
 ni2_topoplot(sens, topo); colorbar
 
 % verify that the topography due to two closely spaced sources is very
 % similar to a topography of a single source at the average location
 testdippar1 = [0.75 0 6 0 1 0; 1.25 0 6 0 1 0];
 testdippar2 = [1 0 6 0 2 0]; % this is the average location but double the dipole moment
-testleadfield1  = ni2_leadfield(sens,headmodel, testdippar1);
-testleadfield2  = ni2_leadfield(sens,headmodel, testdippar2);
+testleadfield1 = ni2_leadfield(sens, headmodel, testdippar1);
+testleadfield2 = ni2_leadfield(sens, headmodel, testdippar2);
+
 ni2_topoplot(sens, sum(testleadfield1, 2)); colorbar
 ni2_topoplot(sens, testleadfield2); colorbar
 ni2_topoplot(sens, testleadfield2-sum(testleadfield1,2)); colorbar

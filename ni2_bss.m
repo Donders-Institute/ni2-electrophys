@@ -6,7 +6,7 @@ load ~/teaching/sources.mat
 % The six sources are arranged in a matrix 'sources' of size
 % [trials X sources X time].  We first reshape so that time is concatenated
 % over trials.
-sources=reshape(permute(sources,[2 3 1]),[6 100000]);
+sources = reshape(permute(sources,[2 3 1]),[6 100000]);
 % Recall that the order of the sources is:
 % 1) GammaERS
 % 2) AlphaERS
@@ -21,14 +21,14 @@ ni2_subplot(sources(:,1:1000));
 ni2_subplot(sources(:,1:1000),2);
 
 % Now let's create a random linear mixture of these sources.
-state=randomseed(5);
-mixing=randn(6);
-sensors=mixing*sources;
+state = randomseed(5);
+mixing = randn(6);
+sensors = mixing*sources;
 
 % First try of just 2 sources.
-mixing2=mixing([2 4],[2 4]);
-sources2=sources([2 4],:);
-sensors2=mixing2*sources2;
+mixing2 = mixing([2 4],[2 4]);
+sources2 = sources([2 4],:);
+sensors2 = mixing2*sources2;
 
 ni2_subplot(sensors(:,1:1000));
 ni2_subplot(sensors2(:,1:1000));
@@ -39,9 +39,9 @@ ni2_subplot(sensors2(:,:),2);
 
 % If we knew ground truth mixing matrix, can we reconstruct sources?
 % Recall Matlab exercises from Eric Maris
-estsource=mixing\sensors;
+estsource = mixing\sensors;
 
-figure;plot([sources(1,:)-estsource(1,:)])
+figure; plot([sources(1,:)-estsource(1,:)])
 ni2_subplot(estsource(:,1:1000));
 
 %% PCA
@@ -60,7 +60,7 @@ ni2_subplot(V2(1:1000,1:2)')
 ni2_subplot(V2(1:1000,1:2)',2)
 
 % Are these components actually orthogonal?
-figure;imagesc(corr(V(:,1:6)));caxis([-1 1])
+figure; imagesc(corr(V(:,1:6)));caxis([-1 1])
 
 % Can we solve it ourselves 'by hand'?
 
@@ -69,9 +69,9 @@ x(2,:)=squeeze(tlock.trial(2,1,:));
 
 % Find wT such that wT*R*w is minimized
 global x % This allows the variable 'x' to be seen inside the function 'project_cov'
-Aunmix=reshape(fminsearch(@project_cov,randn(1,4))',[2 2]);
+Aunmix = reshape(fminsearch(@project_cov,randn(1,4))',[2 2]);
 y=[Aunmix*x];
-% figure;subplot(1,2,1);plot(x(1,:),x(2,:),'o')
+% figure; subplot(1,2,1);plot(x(1,:),x(2,:),'o')
 % subplot(1,2,2);plot(y(1,:),y(2,:),'o')
 % Dot product to assess orthogonal
 % Aunmix(1,:)*Aunmix(2,:)'
@@ -84,7 +84,7 @@ y(1,:) = x(1,:);
 e(1,:) = y(1,:)/norm(y(1,:));
 y(2,:) = x(2,:) - ( y(1,:)* x(2,:)')/ ( y(1,:)* y(1,:)')*y(1,:);
 e(2,:) = y(2,:)/norm(y(2,:));
-% figure;subplot(1,2,1);plot(x(1,:),x(2,:),'o')
+% figure; subplot(1,2,1);plot(x(1,:),x(2,:),'o')
 % subplot(1,2,2);plot(y(1,:),y(2,:),'o')
 x(1,:)*x(2,:)'
 y(1,:)*y(2,:)'
@@ -97,11 +97,11 @@ ft_hastoolbox('fastica', 1);       % see http://www.cis.hut.fi/projects/ica/fast
 % ft_hastoolbox('eeglab', 1);
 
 [fastica_mixing2, fastica_unmixing2] = fastica(sensors2);
-estsources2_fastica=fastica_unmixing2*sensors2;
+estsources2_fastica = fastica_unmixing2*sensors2;
 ni2_subplot(estsources2_fastica(:,1:1000));
 
 [fastica_mixing, fastica_unmixing] = fastica(sensors);
-estsources_fastica=fastica_unmixing*sensors;
+estsources_fastica = fastica_unmixing*sensors;
 ni2_subplot(estsources_fastica(:,1:1000));
 
 % Has ICA recovered the original time series?
@@ -128,16 +128,16 @@ sensors_sorted = mixing*sources_sorted;
 ni2_subplot(sensors_sorted(:,1:1000))
 
 [fastica_mixing_sorted, fastica_unmixing_sorted] = fastica(sensors_sorted);
-estsources_sorted=fastica_unmixing_sorted*sensors_sorted;
+estsources_sorted = fastica_unmixing_sorted*sensors_sorted;
 ni2_subplot(estsources_sorted(:,1:1000));
 % Why are there only 5 estsources_sorted?
 
 % Let's re-do with 5 sources to make it easier.
-sources5=sources([1 2 3 4 6],:);
+sources5 = sources([1 2 3 4 6],:);
 [sources5_sorted, order5_sorted]=sort(sources5,2);
 sensors5_sorted = mixing([1 2 3 4 6],[1 2 3 4 6])*sources5_sorted;
 [fastica_mixing5_sorted, fastica_unmixing5_sorted] = fastica(sensors5_sorted);
-estsources5_sorted=fastica_unmixing5_sorted*sensors5_sorted;
+estsources5_sorted = fastica_unmixing5_sorted*sensors5_sorted;
 
 % Can we reconstruct the original time series, by knowing order_sorted?
 % To do so, we need to know which component of estsources_sorted matches
@@ -154,7 +154,7 @@ ni2_subplot(estsources_unsorted(:,1:1000));
 % Does type of ICA matter?
 ft_hastoolbox('eeglab', 1);
 [runica_mixing5_sorted, runica_unmixing5_sorted] = runica_wrapper(sensors5_sorted);
-estsources5_sorted=runica_unmixing5_sorted*sensors5_sorted;
+estsources5_sorted = runica_unmixing5_sorted*sensors5_sorted;
 ni2_subplot(estsources_sorted(:,1:1000));
 
 corr(estsources5_sorted',sources5_sorted')
@@ -216,8 +216,8 @@ ft_databrowser(cfg,data_cleanica);
 % Plot the difference of tlock and tlock_cleanica
 cfg=[];
 cfg.keeptrials='yes';
-tlock_cleanica=ft_timelockanalysis(cfg,data_cleanica);
-tlockdiff=tlock;
+tlock_cleanica = ft_timelockanalysis(cfg,data_cleanica);
+tlockdiff = tlock;
 tlockdiff.trial = tlock_cleanica.trial-tlock.trial;
 cfg=[];
 cfg.viewmode = 'vertical';

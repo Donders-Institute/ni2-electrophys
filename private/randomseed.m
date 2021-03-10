@@ -1,4 +1,4 @@
-function state=randomseed(setseed)
+function state = randomseed(setseed)
 % randomseed(seedval)
 %
 % Sets the use of rand/randn/randi to specific state/seed,
@@ -34,45 +34,45 @@ function state=randomseed(setseed)
 if isempty(setseed) % save out rand state for later use
   if matlabversion(-Inf,'7.3') 
     rand('twister',sum(100*clock)) % can fail otherwise, if first time rand is called per matlab session
-    state=rand('twister');
+    state = rand('twister');
   elseif matlabversion('7.4','7.6') 
-    state=rand('twister');
+    state = rand('twister');
   elseif matlabversion('7.7','7.11')
     stream = RandStream.getDefaultStream;
-    state=stream.State;
+    state = stream.State;
   elseif matlabversion('7.12',Inf)
-    s=rng;
-    state=s.State;
+    s = rng;
+    state = s.State;
   end
 else % seedval is actual random seed value set by user, OR saved state
   if matlabversion(-Inf,'7.6') 
     rand('twister',setseed);
-    state=rand('twister');
+    state = rand('twister');
   elseif matlabversion('7.7','7.11')
     if isscalar(setseed)
-      stream=RandStream('mt19937ar','Seed',setseed);
+      stream = RandStream('mt19937ar','Seed',setseed);
     else
-      stream=RandStream.getDefaultStream;
-      stream.State=setseed;
+      stream = RandStream.getDefaultStream;
+      stream.State = setseed;
     end
     RandStream.setDefaultStream(stream);
-    state=stream.State;
+    state = stream.State;
   elseif matlabversion('7.12',Inf)
     if isscalar(setseed)
       rng(setseed,'twister')
-      s=rng;
+      s = rng;
     elseif isnumeric(setseed)
       s.Type='twister';
-      s.State=setseed;
-      s.Seed=0;
+      s.State = setseed;
+      s.Seed = 0;
       rng(s);
     else
       s.Type='Legacy';
       s.Seed='Not applicable';
-      s.State=setseed;
+      s.State = setseed;
       rng(s);
     end
-    state=s.State;
+    state = s.State;
   end
 end;
 

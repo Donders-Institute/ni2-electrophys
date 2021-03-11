@@ -8,6 +8,16 @@ If we have measured data and a pre-computed leadfield (based on known sensor pos
 
 Throughout this homework, the equation representing the data and model is `y = L*s+n`. Here, `y` is the sensor data, `L` is the known leadfield, `s` is the source amplitude and `n` is sensor noise.
 
+## 1.2 Getting started: setting up the MATLAB environment
+
+As a first step, you need to install the required toolboxes on your computer. These can be obtained from Brightspace. We advise you to create a separate folder that will contain the material for this course. For example, on Windows, you could create a folder in 'My Documents' called 'neuroimaging2', with a subfolder called 'matlab'. You have to download the two zip-files `fieldtrip.zip` and `ni2.zip` from Brightspace to this folder and unzip them in this location.
+
+Next, MATLAB needs to know where to find the code we are using in the exercises. To this end, the folders you have just created need to be added to the MATLAB-path. Although this can be done through the 'Set Path' option (see figure 1), we will use a `startup.m` file. This is a script that automatically deals with the path-settings that are relevant for the exercises. Each time you start a MATLAB-session, you need to change the Current Folder to `ni2`, and type `ni2_startup` on the command line. This will automatically ensure that the path-settings are correct.
+
+## 1.3 Getting started: tips on how to approach the exercises
+
+The best way to approach the exercises is to create a MATLAB-script that can be used to copy-and-paste the MATLAB-code in the instructions, and allows you to play around with various parameter settings etc. You can open a new script in the MATLAB-editor by typing edit on the command line, or by going to File->New->Script. Next, you can save each script as a separate file in your course folder.
+
 # 2 Non-unique solutions for underdetermined systems: using the minimum norm of the source strength as additional constraint
 
 After this section, you will

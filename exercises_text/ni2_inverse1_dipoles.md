@@ -1,10 +1,10 @@
 # 1 Fitting EEG/MEG activity with dipole models
 
-This document contains the MATLAB exercises that form part of the course “Neuroimaging II” relating to dipole modelling, or dipole fitting.
+This document contains the MATLAB exercises that form part of the course “Neuroimaging II” relating to dipole modeling, or dipole fitting.
 
 ## 1.1 Introduction
 
-These exercises treat the topic of dipole modelling. This technique is a so-called parametric inverse method, because we will estimate a set of parameters yielding a model of the observed data, which is aimed at explaining the data in an optimal way. The modelling assumption we make here is that the spatial distribution of measured potential or magnetic field at any moment in time is 'caused’ by a limited number of equivalent current dipoles (ECDs). In the past sessions you have learnt that we can build models of the potential difference or magnetic field distribution for a given set of dipole parameters (3 location, and 3 moment parameters). This is the so-called forward model. The idea of dipole modelling is as follows: given a set of parameters we build a forward model of the data, and compare this forward model with the measured data, by computing a measure of goodness-of-fit. Then, we manipulate the parameters a tiny bit, recompute the forward model, and see whether the goodness-of-fit is improved. If the goodness-of-fit is improved, then the current model of the data apparently is better than the previous one. We continue changing the parameters until we cannot further improve the goodness-of-fit.
+These exercises treat the topic of dipole modeling. This technique is a so-called parametric inverse method, because we will estimate a set of parameters yielding a model of the observed data, which is aimed at explaining the data in an optimal way. The modeling assumption we make here is that the spatial distribution of measured potential or magnetic field at any moment in time is 'caused’ by a limited number of equivalent current dipoles (ECDs). In the past sessions you have learnt that we can build models of the potential difference or magnetic field distribution for a given set of dipole parameters (3 location, and 3 moment parameters). This is the so-called forward model. The idea of dipole modeling is as follows: given a set of parameters we build a forward model of the data, and compare this forward model with the measured data, by computing a measure of goodness-of-fit. Then, we manipulate the parameters a tiny bit, recompute the forward model, and see whether the goodness-of-fit is improved. If the goodness-of-fit is improved, then the current model of the data apparently is better than the previous one. We continue changing the parameters until we cannot further improve the goodness-of-fit.
 
 ## 1.2 Getting started: setting up the MATLAB environment
 
@@ -18,7 +18,7 @@ The best way to approach the exercises is to create a MATLAB-script that can be 
 
 # 2 Fitting a model to the observed data
 
-The first thing we need to do is to determine which data matrix we are going to model. As you know by now, the measured data can be represented in a spatio-temporal matrix, where the rows represent the channels, and the columns represent the spatial topography of the observed activity for a given time point. We will start by modelling the data that is observed at a single time point. Then, we need to make an assumption about the number of dipoles (and thus the number of parameters) that we believe underly the observed data. Here, we start with assuming that the data can be modelled with just a single dipole.
+The first thing we need to do is to determine which data matrix we are going to model. As you know by now, the measured data can be represented in a spatio-temporal matrix, where the rows represent the channels, and the columns represent the spatial topography of the observed activity for a given time point. We will start by modeling the data that is observed at a single time point. Then, we need to make an assumption about the number of dipoles (and thus the number of parameters) that we believe underly the observed data. Here, we start with assuming that the data can be modelled with just a single dipole.
 
 After doing these exercises
 
@@ -137,7 +137,7 @@ Now we can very quickly compute the goodness-of-fit for all locations in the 3D-
 
 # 4 Adding the time dimension
 
-When using the topography from a single time point for dipole modelling, noise in the data can negatively affect the result. To this end it makes sense to combine data across time points. Under the assumption that the model is stationary in terms of dipole location (and possibly also in terms of orientation) pooling across time points can be efficient in improving the model fit.
+When using the topography from a single time point for dipole modeling, noise in the data can negatively affect the result. To this end it makes sense to combine data across time points. Under the assumption that the model is stationary in terms of dipole location (and possibly also in terms of orientation) pooling across time points can be efficient in improving the model fit.
 
 After these exercises:
 
@@ -210,7 +210,7 @@ The output variable to `ft_dipolefitting` has a field `dip` containing informati
 
 # 6 It’s all about the assumptions
 
-One important issue in dipole modelling is that the prior assumptions critically constrain the final model (and thus the model fit). If these assumptions don’t coincide with what’s actually in the data, this can lead to erroneous interpretations. This can work in two directions, either the model is too simplistic (i.e. you assume too few dipoles), or too complicated (you assume too many dipoles).
+One important issue in dipole modeling is that the prior assumptions critically constrain the final model (and thus the model fit). If these assumptions don’t coincide with what’s actually in the data, this can lead to erroneous interpretations. This can work in two directions, either the model is too simplistic (i.e. you assume too few dipoles), or too complicated (you assume too many dipoles).
 
 After these exercises:
 

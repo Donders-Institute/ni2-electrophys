@@ -1,20 +1,20 @@
-# The biophysical forward model
+# 1 The biophysical forward model
 
 We assume that you have MATLAB installed and that you understand the basics. This includes the following: starting a MATLAB session, using the command-line, and using the MATLAB-editor.
 
 For the exercises we are going to use MATLAB-code that has been written specifically for this course, as well the MATLAB-based toolbox [FieldTrip](https://www.fieldtriptoolbox.org). The latter has been initiated at the Donders Centre for Cognitive Neuroimaging. The toolbox is under continuous development and contains many state-of-the-art algorithms for the analysis of electrophysiological data. Unlike other popular toolboxes, FieldTrip does not come with a Graphical User Interface (GUI), and thus simply clicking buttons is not sufficient to achieve what comes to your mind. As a consequence, the novice user may experience some difficulties in getting the most out of the toolbox. Fortunately, there is an excellent website that provides a wealth of information. For the exercises in this course, no detailed knowledge about FieldTrip is required. Howver, if you have some time to spare and feel adventurous, there is a large quantity of tutorials online that can be followed. See [this link](https://www.fieldtriptoolbox.org/) for more information.
 
-## Getting started: setting up the MATLAB environment
+## 1.1 Getting started: setting up the MATLAB environment
 
 As a first step, you need to install the required toolboxes on your computer. These can be obtained from Brightspace. We advise you to create a separate folder that will contain the material for this course. For example, on Windows, you could create a folder in 'My Documents' called 'neuroimaging2', with a subfolder called 'matlab'. You have to download the two zip-files fieldtrip.zip and ni2.zip from Brightspace to this folder and unzip them in this location.
 
 Next, MATLAB needs to know where to find the code we are using in the exercises. To this end, the folders you have just created need to be added to the MATLAB-path. Although this can be done through the 'Set Path' option (see figure 1), we will use a `startup.m` file. This is a script that automatically deals with the path-settings that are relevant for the exercises. Each time you start a MATLAB-session, you need to change the Current Folder to ni2, and type `ni2_startup` on the command line. This will automatically ensure that the path-settings are correct.
 
-## Getting started: tips on how to approach the exercises
+## 1.2 Getting started: tips on how to approach the exercises
 
-The best way to approach the exercises is to create a MATLAB-script that can be used to copy-and-paste the MATLAB-code in the instructions, and allows you to play around with various parameter settings etc.  You can open a new script in the MATLAB-editor by typing edit on the command line, or by going to File->New->Script (see figure). Next, you can save each script as a separate file in your course folder.
+The best way to approach the exercises is to create a MATLAB-script that can be used to copy-and-paste the MATLAB-code in the instructions, and allows you to play around with various parameter settings etc. You can open a new script in the MATLAB-editor by typing edit on the command line, or by going to File->New->Script. Next, you can save each script as a separate file in your course folder.
 
-# Spatial mixing is linear mixing is matrix multiplication
+# 2 Spatial mixing is linear mixing is matrix multiplication
 
 Electrophysiological signals typically represent a mixture of the underlying neuronal sources. The next exercises intend to give some fundamental insights with respect to the general mixing phenomenon. After doing these exercises:
 
@@ -36,13 +36,13 @@ The output variables data and time contain for each sampled time point the ampli
 
 Now we will create an activation time course, which peaks at 0.4 seconds, and which has an oscillation frequency of 5 Hz:
 
-    [data2, time2] = ni2_activation('latency', 0.4,'frequency', 5)
+    [data2, time2] = ni2_activation('latency', 0.4, 'frequency', 5)
 
 Verify the result by using the plot function. You can visualize the two time courses in the same figure by doing:
 
     figure; hold on;
     plot(time, data);
-    plot(time2, data2,'r');
+    plot(time2, data2, 'r');
 
 The hold on command is necessary in order to show more than one line in the figure.
 
@@ -55,7 +55,7 @@ We can apply a very simple instantaneous mixing to the two sources' timecourses 
 
 > Plot the three activation time courses in a single figure and verify that the peaks and troughs in the mixed signal do not necessarily end up at the same latencies as in the constituent source signals.
 
-> Investigate how the morphology of the mixed signal changes, when the latency of the second component (data2) is changed. Also, see what the effect is of changing the phase of the second component. Hint: create a new ‘data2’ with different input parameters to ni2_activation and create a new ‘datamix’. Look in the help documentation of ni2_activation to try and understand how to adjust the phase of the signal.
+> Investigate how the morphology of the mixed signal changes, when the latency of the second component (data2) is changed. Also, see what the effect is of changing the phase of the second component. Hint: create a new 'data2’ with different input parameters to ni2_activation and create a new 'datamix’. Look in the help documentation of ni2_activation to try and understand how to adjust the phase of the signal.
 
 Next, we will verify that a (weighted) combination of two (or more) activation time courses can be easily achieved by means of a matrix multiplication. To this end we first concatenate the original source activations into a single matrix (each of the original timecourses will be a row in the resulting matrix):
 
@@ -93,7 +93,7 @@ Note, that the sum of the values in the rows of the mixing matrix do not have to
 
 > What is the effect of a negative mixing weight on the mixed result?
 
-# Spatial mixing of neural sources: the leadfield
+# 3 Spatial mixing of neural sources: the leadfield
 
 This section deals with the spatial topographies of activity that are observed with EEG when neural sources are active. Modeling these spatial topographies when the underlying sources are known is called forward modeling. After doing these exercises
 
@@ -110,19 +110,19 @@ As a volume conduction model we will initially use a simple model, consisting of
 
 To create the headmodel, type:
 
-    headmodel = ni2_headmodel('type','spherical','nshell', 3)
+    headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3)
 
 To create the sensor array, type:
 
-    sens = ni2_sensors('type','eeg')
+    sens = ni2_sensors('type', 'eeg')
 
 These can be visualized using a few functions from the FieldTrip-toolbox:
 
     figure; hold on;
-    ft_plot_headmodel(headmodel,'edgecolor','none');
+    ft_plot_headmodel(headmodel, 'edgecolor', 'none');
     ft_plot_sens(sens);
 
-Now we have a sensor array and a volume conductor model we can build a model for any source specified within the volume conductor.  For example:
+Now we have a sensor array and a volume conductor model we can build a model for any source specified within the volume conductor. For example:
 
     dippar1 = [0 0 6 1 0 0];
     leadfield1 = ni2_leadfield(sens, headmodel, dippar1);
@@ -173,11 +173,15 @@ This is a very important feature of electromagnetic forward models and in essenc
 
 So far, we have considered the leadfield of a source located at [0 0 6], with an orientation of [1 0 0]. Explore the effect of changing the position and orientation parameters. Investigate the following situations:
 
-> - Keep the orientation fixed and change the location of the source, e.g. by moving it closer to the center of the ‘head’.
--  Change the y and z position of the source.
--  Keep the location at a fixed position and change the orientation of the source. Start by investigating the orientation [1 0 0], [0 1 0], and [0 0 1].
--  Also explore source orientations that have more than 1 non-zero value, e.g. [0 1 1].
--  Compare the effect of a change in the sign of the orientation, e.g. [0 1 1] versus [0 -1 -1].
+> Keep the orientation fixed and change the location of the source, e.g. by moving it closer to the center of the 'head’.
+>
+> Change the y and z position of the source.
+>
+> Keep the location at a fixed position and change the orientation of the source. Start by investigating the orientation [1 0 0], [0 1 0], and [0 0 1].
+>
+> Also explore source orientations that have more than 1 non-zero value, e.g. [0 1 1].
+>
+> Compare the effect of a change in the sign of the orientation, e.g. [0 1 1] versus [0 -1 -1].
 
 Up to this point we have explicitly added the orientation parameters when computing a leadfield. Typically, however, a leadfield is defined as a 3-column matrix, where, for a source at a given location, each of the columns represent a unit source with the orientation along the axes of the coordinate system. In other words, the first column represents a source with orientation [1 0 0], the second column represents a source with orientation [0 1 0], etc. Based on this 3-column representation, any orientation of the source can be represented by means of (could it be any different?) linear mixing.
 

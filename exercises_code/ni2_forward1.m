@@ -98,6 +98,8 @@ ni2_topoplot(sens, testleadfield2-sum(testleadfield1,2)); colorbar
 
 %% page 10
 
+close all
+
 % keep orientation fixed and move close to center of the head
 z_coord = (0:0.5:8.5);
 testdippar = zeros(numel(z_coord),6);
@@ -122,17 +124,29 @@ end
 testleadfield = ni2_leadfield(sens, headmodel, testdippar);
 for k = 1:size(testleadfield,2)
   ni2_topoplot(sens, testleadfield(:,k));
+  drawnow
 end
+
+%%
+
+close all
 
 % taking the next three points together, investigating the effect of a
 % change in orientation
-testdippar = [0 0 8 1 0 0;
-          0 0 8 0 1 0;
-          0 0 8 0 0 1];
+testdippar = [
+  0 0 8 1 0 0;
+  0 0 8 0 1 0;
+  0 0 8 0 0 1
+  ];
 testleadfield = ni2_leadfield(sens, headmodel, testdippar);
 for k = 1:size(testleadfield,2)
   ni2_topoplot(sens, testleadfield(:,k));
+  drawnow
 end
+
+%%
+
+close all
 
 % rotate in the x/y plane
 angles = (-1:0.1:1).*pi;
@@ -146,7 +160,12 @@ end
 testleadfield = ni2_leadfield(sens, headmodel, testdippar);
 for k = 1:size(testleadfield,2)
   ni2_topoplot(sens, testleadfield(:,k));
+  drawnow
 end
+
+%%
+
+close all
 
 % verify that linear mixing of the three-column leadfield is the same
 % as providing the 'mixing' as dipole moment parameters
@@ -154,5 +173,5 @@ dipolemoment = randn(1,3);
 testdippar = [0 0 8 dipolemoment];
 testleadfield1 = ni2_leadfield(sens, headmodel, testdippar);
 testleadfield2 = ni2_leadfield(sens, headmodel, testdippar(1:3));
-ni2_topoplot(sens, testleadfield1);
-ni2_topoplot(sens, testleadfield2*testdippar(4:6)');
+ni2_topoplot(sens, testleadfield1); colorbar
+ni2_topoplot(sens, testleadfield2*testdippar(4:6)'); colorbar

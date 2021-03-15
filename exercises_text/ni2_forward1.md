@@ -142,16 +142,17 @@ A basic feature of a leadfield is that a change in the amplitude of the dipole d
 
 The important consequence of this is that the amplitude can be 'uncoupled' from the orientation (and location) information. Namely:
 
-    ni2_topoplot(sens, leadfield1*2)
+    ni2_topoplot(sens, leadfield1*2); colorbar
 
 will yield the same result as:
 
-    ni2_topoplot(sens, leadfield2)
+    ni2_topoplot(sens, leadfield2); colorbar
 
 For this reason, it is custom (and convenient) that leadfields are defined as the spatial topography of the electric potential (EEG) or magnetic field (MEG) due to a unit-amplitude source at a given location and orientation.
+
 In the example above the amplitude information (the value '2') just represented the activity of a source in a single time point. The amplitude term can be very easily extended to contain multiple time points, i.e. to become a vector. Mathematically, this can still be expressed as a matrix multiplication:
 
-    leadfield x amplitude time course.
+    leadfield x amplitude time course
 
 We will return to this very important property in the next section.
 
@@ -163,6 +164,7 @@ Another basic feature is that if two (or more sources) are simultaneously active
     ni2_topoplot(sens, topo); colorbar
 
 The variable dippar3 consists of 2 rows of 6 parameters, each representing a dipole. As a result, the variable leadfield3 consists of two columns, each representing the spatial topography that is caused by one dipole.
+
 Note that the mixing column vector ([1; 1]) features on the right side of the leadfield matrix, as opposed to on the left side (where in addition the mixing vector was a row vector) when we were mixing activation time courses in the previous section.
 
 Note also, that in the above example two unit-amplitude sources are located very close to one another.

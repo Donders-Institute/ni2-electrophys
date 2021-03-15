@@ -30,13 +30,13 @@ Without specifying any input arguments, the function will set all parameters to 
 
 The output variables data and time contain for each sampled time point the amplitude of the signal, and the time in seconds. You can visualize the data by using MATLAB's built-in function plot. Type
 
-    figure; plot(time, data)
+    figure; plot(time, data);
 
 > Verify whether the default parameter settings in ni2_activation coincide with what is described in the function’s
 
 Now we will create an activation time course, which peaks at 0.4 seconds, and which has an oscillation frequency of 5 Hz:
 
-    [data2, time2] = ni2_activation('latency', 0.4, 'frequency', 5)
+    [data2, time2] = ni2_activation('latency', 0.4, 'frequency', 5);
 
 Verify the result by using the plot function. You can visualize the two time courses in the same figure by doing:
 
@@ -78,7 +78,7 @@ or, more generally
 
 Note that the outcome of a matrix multiplication A*B, where the input matrices are of dimensionality n x m and m x p yields a matrix of dimensionality n x p. If you don't remember exactly the mechanics involved in a matrix multiplication, you should look this up in the course material for the CNS Advanced Mathematics course, or you could check the Wikipedia entry on matrix multiplication. In our example p corresponds with the number of time points, m with the number of 'sources', and n with the number of 'channels'. Our (very simple) 1 x 2 mixing matrix [1 1] thus corresponds to the mapping of 2 sources onto a single channel, where each of the sources is weighted with a factor of 1. We can increase the number of channels by increasing the number of rows in the matrix mix:
 
-    mix = [0 1; 0.1 0.9; 0.25 0.75; 0.5 0.5; 0.75 0.25; 0.9 0.1; 1 0]
+    mix = [0 1; 0.1 0.9; 0.25 0.75; 0.5 0.5; 0.75 0.25; 0.9 0.1; 1 0];
     datamix = mix*datacombined;
 
 To better evaluate the individual time courses of the mixed sources, but still visualizing them in the same figure, you can type:
@@ -119,7 +119,7 @@ To create the sensor array, type:
 These can be visualized using a few functions from the FieldTrip-toolbox:
 
     figure; hold on;
-    ft_plot_headmodel(headmodel, 'edgecolor', 'none');
+    ft_plot_vol(headmodel, 'edgecolor', 'none');
     ft_plot_sens(sens);
 
 Now we have a sensor array and a volume conductor model we can build a model for any source specified within the volume conductor. For example:

@@ -22,7 +22,7 @@ if all(size(topo)>1)
 end
 
 % make column vector
-topo = topo(:); 
+topo = topo(:);
 
 % do another sanity check on the topo
 if numel(topo)~=size(sens.chanpos,1)
@@ -38,6 +38,7 @@ data.dimord = 'chan_time';
 
 if nargin<3
   cfg = [];
+  cfg.interactive = 'no';
 end
 
 if ~isfield(cfg, 'layout')

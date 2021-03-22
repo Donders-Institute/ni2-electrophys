@@ -9,7 +9,7 @@ end
 
 if ~isfield(cfg, 'layout')
   % create layout
-  if strncmp(sens.chantype{1}, 'meg', 3);
+  if strncmp(sens.chantype{1}, 'meg', 3)
     tmpcfg.grad = sens;
   else
     tmpcfg.elec = sens;
@@ -18,7 +18,7 @@ if ~isfield(cfg, 'layout')
 end
 layout = cfg.layout;
 
-hh = figure;
+figure;
 [h,xi,yi,zi,x,y] = ni2_topo(layout, dat(:,1), cfg);
 
 axis([-0.6 0.6 -0.6 0.6]);
@@ -27,11 +27,17 @@ grid off;
 
 th = text(0,-0.6,sprintf('time=% s',num2str(time(1))));
 
+% determine the lower and upper limits
 clim = [min(dat(:)) max(dat(:))];
+
 for k = 1:4:size(dat,2)
-  Zi = griddata(x', y', dat(:,k), xi, yi, 'v4'); % interpolate the topographic data
+  % interpolate the topographic data
+  Zi = griddata(x', y', dat(:,k), xi, yi, 'v4'); 
+  % replace the values outside the head with not-a-number
   Zi(isnan(zi)) = nan;
-  set(h, 'CData', Zi);caxis(clim);drawnow;
+  set(h, 'CData', Zi); 
+  caxis(clim);
+  drawnow;
   % pause(0.05);
   set(th, 'string', sprintf('time=% s',num2str(time(k),'% 1.3f')));
 end

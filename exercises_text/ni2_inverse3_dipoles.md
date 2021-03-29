@@ -31,7 +31,7 @@ We begin by generating some sensor-level data, by now this hopefully starts to l
     sens = ni2_sensors('type', 'eeg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
     leadfield = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);
-    sensordata = leadfield_data+randn(91, 1000)*1e-3;
+    sensordata = leadfield * data + randn(91, 1000)*1e-3;
 
 We have added some noise to the data, in order to make it look more realistic. Now we select a single time slice from the data matrix, which will serve as our observed topography:
 
@@ -95,11 +95,12 @@ Now, what we can do is repeat the steps in the previous section for each of thes
 > If you don’t know already about the concept of a for-loop, read a bit about this in the MATLAB-documentation (type ‘help for’ or ‘doc for’ for this purpose).
 
     sumsq = zeros(size(pos, 1), 1);
+    
     for k=1:size(pos, 1)
       leadfield = ni2_leadfield(sens, headmodel, pos(k,:));
-      dipmom = leadfield\\topo_observed;
-      topo_modelled = leadfield*dipmom;
-      sumsq(k)=sum((topo_observed-topo_modelled).^2)./sum(topo_observed.^2);
+      dipmom = leadfield\topo_observed;
+      topo_modelled = leadfield * dipmom;
+      sumsq(k) = sum((topo_observed-topo_modelled).^2)./sum(topo_observed.^2);
     end
 
 > Verify that what’s happening within the for-loop is the same as you did in the previous section.
@@ -153,26 +154,29 @@ Yet, in our very simple generative model (with generative model we mean the mode
 
 > Bonus question: which time point would yield a better result: 475 or 550? Argue why. Hint: consider the parameters used to generate the simulated time course.
 
-Now we are going to fit a single dipole model to a spatial topography from a single time point, just as in the previous section.
+Now we are going to fit a single dipole model to a spatial topography from a single time point, just as in the previous section. To speed things up, we will not compute the leadfields on the fly, but load the pre-computed leadfields.
 
     topo_observed = sensordata(:, 500);
     pos = sourcemodel.pos(sourcemodel.inside,:);
     load('leadfields');
     sumsq = ones(size(pos, 1), 1);
+
     for k=1:size(pos, 1)
+      disp(k)
       ik=(k-1)*3+(1:3);
-      dipmom = leadfield(:, ik)\\topo_observed;
+      dipmom = leadfield(:, ik) \ topo_observed;
       topo_modelled = leadfield(:, ik)*dipmom;
-      sumsq(k, 1)=sum((topo_observed(:)-topo_modelled(:)).^2)./sum(topo_observed(:).^2);
+      sumsq(k, 1) = sum((topo_observed(:)-topo_modelled(:)).^2)./sum(topo_observed(:).^2);
     end
+
     [m, ix] = min(sumsq);
     pos(ix,:)
 
-Note the use of (:) in the line of code just before the end statement. This is the instruction for MATLAB to reshape any matricial variable into a vector. As such this is not needed in case the topography consists of just a single time point (because the observed topography is already a vector), but we will need it when fitting multiple time points.
+Note the use of `(:)` in the line of code just before the end statement. This is the instruction for MATLAB to reshape a matrix into a vector. As such this is not needed in case the topography consists of just a single time point (because the observed topography is already a vector), but we will need it when fitting multiple time points.
 
 # 5 The real deal
 
-So far, for didactical purposes, we have constrained ourselves and evaluated the error-function based on a grid search. In this section we are going to use one of FieldTrip’s core functions ft_dipolefitting to do a proper dipole fit on our simulated EEG-data.
+So far, for didactical purposes, we have constrained ourselves and evaluated the error-function based on a grid search. In this section we are going to use one of FieldTrip’s core functions `ft_dipolefitting` to do a proper dipole fit on our simulated EEG-data.
 
 After this section
 
@@ -189,14 +193,16 @@ Let’s first create the data variable:
     data.label = sens.label;
     data.elec = sens;
     data.dimord = 'chan_time';
-    And the cfg-structure:
+
+And the cfg-structure:
+
     cfg = [];
     cfg.gridsearch = 'no';
     cfg.model = 'regional';
     cfg.vol = headmodel;
     cfg.latency = [0.49 0.51];
     cfg.nonlinear = 'yes';
-    cfg.numdipoles=1;
+    cfg.numdipoles = 1;
 
 Now we can call the function:
 
@@ -218,13 +224,16 @@ After these exercises:
 
 First, we create some sensor-level data that contains two sources:
 
-    [data, time] = ni2_activation;
-    [data2, time] = ni2_activation('frequency', 11, 'latency', 0.48);
     sens = ni2_sensors('type', 'eeg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
-    leadfield = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);
+
+    [data1, time] = ni2_activation;
+    [data2, time] = ni2_activation('frequency', 11, 'latency', 0.48);
+
+    leadfield1 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);
     leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]);
-    sensordata = leadfield_data+leadfield2_data2+randn(91, 1000)*.7e-3;
+
+    sensordata = leadfield1*data1 + leadfield2*data2 + randn(91, 1000)*.7e-3;
 
 Now we will perform the same grid search as in section 4, using the 490th time point for the observed topography:
 
@@ -233,7 +242,9 @@ Now we will perform the same grid search as in section 4, using the 490th time p
     pos = sourcemodel.pos(sourcemodel.inside,:);
     load('leadfields');
     sumsq = ones(size(pos, 1), 1);
+
     for k=1:size(pos, 1)
+      disp(k)
       ik=(k-1)*3+(1:3);
       dipmom = leadfield(:, ik)\\topo_observed;
       topo_modelled = leadfield(:, ik)*dipmom;
@@ -268,4 +279,4 @@ We can also fit a model with two dipoles, this can be easily achieved by changin
 
 As you may have noticed, the result is not particularly accurate. The reason for this is that the optimization algorithm got trapped in a local minimum of the error function. This is more likely to happen, the more complicated the underlying model (i.e. more free parameters lead to a high-dimensional error function with a complicated structure and potentially many local minima). We can however inform the fitting algorithm with dipole positions from which to start the non-linear search. If these starting positions are sufficiently close to the actual source positions, the algorithm will converge to the correct solution.
 
-> Specify `cfg.dip.pos=[4 0 6;-4 0 6]` and verify that the result is now much better.
+> Specify `cfg.dip.pos = [4 0 6;-4 0 6]` and verify that the result is now much better.

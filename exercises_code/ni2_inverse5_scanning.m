@@ -97,6 +97,7 @@ cfg.grad = sens;
 cfg.headmodel  = headmodel;
 % cfg.normalize = 'yes';
 sourcemodel = ft_prepare_leadfield(cfg);
+
 L = cat(2,sourcemodel.leadfield{sourcemodel.inside});
 
 % compute the covariance
@@ -236,7 +237,7 @@ cfg = [];
 cfg.funparameter = 'avg.pow';
 cfg.method = 'slice';
 cfg.nslices = 10;
-cfg.funcolorlim=[0 0.2];
+cfg.funcolorlim = [0 0.2];
 ft_sourceplot(cfg,source);
 
 %% contrast between 2 conditions
@@ -244,33 +245,37 @@ ft_sourceplot(cfg,source);
 % create the sensor data for the second condition
 sensordata2 = 1.25.*leadfield1*s1 + 0.8.*leadfield2*s2 + 0.8.*leadfield3*s3 + 1.25.*leadfield4*s4 + randn(301,1000)*0.04e-8;
 
-% compute the covariance
-C2  = cov([sensordata sensordata2]');
-iC2  = pinv(C2); % so that we compute it only once
+% compute the covariance and its inverse for both conditions combined
+C2   = cov([sensordata sensordata2]');
+iC2  = inv(C2);
 iCr2 = inv(C2+eye(301)*1e-19);
 
-% compute the beamformer spatial filter
+% compute the beamformer spatial filter for condition 2
 for ii = 1:size(L,2)/3
   indx=(ii-1)*3+(1:3);
   Lr = L(:,indx);  % Lr is the leadfield for source r
   wbfr2(indx,:)=pinv(Lr'*iCr2*Lr)*Lr'*iCr2;
 end
-sbfr2 = wbfr2*sensordata2;
-pbfr2 = var(sbfr2,[],2);
-pbfr2 = sum(reshape(pbfr2,3,[]));
+
 sbfr1 = wbfr2*sensordata;
 pbfr1 = var(sbfr1,[],2);
 pbfr1 = sum(reshape(pbfr1,3,[]));
+
+sbfr2 = wbfr2*sensordata2;
+pbfr2 = var(sbfr2,[],2);
+pbfr2 = sum(reshape(pbfr2,3,[]));
+
 source.avg.pow(source.inside)=(pbfr1-pbfr2)./(pbfr1+pbfr2);
 
 cfg = [];
 cfg.funparameter='avg.pow';
-cfg.method='slice';
+cfg.method='ortho';
 cfg.nslices = 10;
 cfg.funcolorlim=[-.2 .2];
 ft_sourceplot(cfg,source);
 
 %% correlated sources
+
 sens = ni2_sensors('type','meg');
 headmodel = ni2_headmodel('type','spherical','nshell',1);
 
@@ -295,6 +300,7 @@ cfg.grad = sens;
 cfg.vol  = headmodel;
 % cfg.normalize = 'yes';
 sourcemodel = ft_prepare_leadfield(cfg);
+
 L = cat(2,sourcemodel.leadfield{sourcemodel.inside});
 
 % compute the covariance

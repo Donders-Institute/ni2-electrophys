@@ -40,47 +40,52 @@ covxy = (x*y')/99
 figure; plot(x,y,'.');
 figure; plot(x); hold on; plot(y,'r');
 
-% compute the covariance matrix from some simulated data in 2 different
-% ways
-[data,time]=ni2_activation;
-[data2,time]=ni2_activation('frequency',11,'latency',0.48);
+%% compute the covariance matrix from some simulated data in 2 different ways
+
 sens = ni2_sensors('type','eeg');
 headmodel = ni2_headmodel('type','spherical','nshell',3);
-leadfield = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);
+
+[data1,time]=ni2_activation;
+[data2,time]=ni2_activation('frequency',11,'latency',0.48);
+
+leadfield1 = ni2_leadfield(sens,headmodel,[ 4.9 0 6.2 0 1 0]);
 leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);
 
 % way 1
-sensordata = leadfield*data+leadfield2*data2;
+sensordata = leadfield1*data1 + leadfield2*data2;
 C1 = sensordata*sensordata';
 
 % way 2
-sourcecov=[data; data2]*[data; data2]';
-C2 = leadfield*leadfield'   * sourcecov(1,1)   + ...
-   leadfield*leadfield2'  * sourcecov(1,2)   + ...
-   leadfield2*leadfield'  * sourcecov(2,1)   + ...
-   leadfield2*leadfield2' * sourcecov(2,2);
- 
+sourcecov=[data1; data2]*[data1; data2]';
+C2 = leadfield1*leadfield1' * sourcecov(1,1)   + ...
+     leadfield1*leadfield2' * sourcecov(1,2)   + ...
+     leadfield2*leadfield1' * sourcecov(2,1)   + ...
+     leadfield2*leadfield2' * sourcecov(2,2);
+
+% confirm that they are the same
+figure; imagesc(C1); colorbar
+figure; imagesc(C2); colorbar
  
 
 %% do the beamforming on some simulated data
 
 % create a leadfield for a few locations
 sens = ni2_sensors('type','meg');
-
 headmodel = ni2_headmodel('type','spherical','nshell',1);
-leadfield1 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]); % position 2352 in grid
-leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]); % position 2342 in grid
-leadfield3 = ni2_leadfield(sens,headmodel,[4.2 -2 7 0 0.2 0.7]); % 2674
-leadfield4 = ni2_leadfield(sens,headmodel,[-2 -7.8 3 -1 0 0]); % 1110
+
+leadfield1 = ni2_leadfield(sens,headmodel,[-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
+leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
+leadfield3 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);     % position 2352 in the grid
+leadfield4 = ni2_leadfield(sens,headmodel,[4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
 
 % create the time course of activation
-[s1,t1]=ni2_activation('latency',.45,'frequency',3);
-[s2,t2]=ni2_activation('latency',.5);
-[s3,t3]=ni2_activation('latency',.55,'frequency',30);
-[s4,t4]=ni2_activation('latency',.5, 'frequency',15);
+[s1, t1] = ni2_activation('latency', .45, 'frequency',  3);
+[s2, t2] = ni2_activation('latency', .50, 'frequency', 10);
+[s3, t3] = ni2_activation('latency', .50, 'frequency', 15);
+[s4, t4] = ni2_activation('latency', .55, 'frequency', 30);
 
 % create the sensor data
-sensordata = leadfield1*s1+leadfield2*s2+leadfield3*s3+leadfield4*s4+randn(301,1000)*0.04e-8;
+sensordata = leadfield1*s1 + leadfield2*s2 + leadfield3*s3 + leadfield4*s4 + randn(301,1000)*0.04e-8;
 
 % create a 3D grid
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
@@ -89,7 +94,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 cfg = [];
 cfg.grid = sourcemodel;
 cfg.grad = sens;
-cfg.vol  = headmodel;
+cfg.headmodel  = headmodel;
 % cfg.normalize = 'yes';
 sourcemodel = ft_prepare_leadfield(cfg);
 L = cat(2,sourcemodel.leadfield{sourcemodel.inside});
@@ -97,47 +102,91 @@ L = cat(2,sourcemodel.leadfield{sourcemodel.inside});
 % compute the covariance
 C  = cov(sensordata');
 iC = pinv(C); % so that we compute it only once
-iCr = inv(C+eye(301)*5e-19);
 
 % compute the beamformer spatial filter
 for ii = 1:size(L,2)/3
   indx=(ii-1)*3+(1:3);
   Lr = L(:,indx);  % Lr is the leadfield for source r
-  wbfr(indx,:)=pinv(Lr'*iCr*Lr)*Lr'*iCr;
-  wbf(indx,:)=pinv(Lr'*iC*Lr)*Lr'*iC;
+  wbf(indx,:)  = pinv(Lr'*iC*Lr)*Lr'*iC;
 end
-sbf = wbf*sensordata;
-sbfr = wbfr*sensordata;
+sbf  = wbf  * sensordata;
+
+%%
+
+sel = find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
+sel = repmat((sel-1)*3,1,3) + repmat(1:3,numel(sel),1);
+
+figure;
+subplot(1,2,1); plot(t1, sbf(sel(1,:),:));
+subplot(1,2,2); plot(t1, s1);
+ 
+figure;
+subplot(1,2,1); plot(t2, sbf(sel(2,:),:));
+subplot(1,2,2); plot(t2, s2);
+ 
+figure;
+subplot(1,2,1); plot(t3, sbf(sel(3,:),:));
+subplot(1,2,2); plot(t3, s3);
+ 
+figure;
+subplot(1,2,1); plot(t4, sbf(sel(4,:),:));
+subplot(1,2,2); plot(t4, s4);
+
+
+%%
+
+% compute the covariance
+C  = cov(sensordata');
+iCr = inv(C + eye(301)*5e-19);
+
+% compute the beamformer spatial filter
+for ii = 1:size(L,2)/3
+  indx=(ii-1)*3+(1:3);
+  Lr = L(:,indx);  % Lr is the leadfield for source r
+  wbfr(indx,:)  = pinv(Lr'*iCr*Lr)*Lr'*iCr;
+end
+sbfr  = wbfr * sensordata;
+
+figure;
+subplot(1,2,1); plot(t1, sbfr(sel(1,:),:));
+subplot(1,2,2); plot(t1, s1);
+ 
+figure;
+subplot(1,2,1); plot(t2, sbfr(sel(2,:),:));
+subplot(1,2,2); plot(t2, s2);
+ 
+figure;
+subplot(1,2,1); plot(t3, sbfr(sel(3,:),:));
+subplot(1,2,2); plot(t3, s3);
+ 
+figure;
+subplot(1,2,1); plot(t4, sbfr(sel(4,:),:));
+subplot(1,2,2); plot(t4, s4);
+
+%%
 
 wmn = L'*inv(L*L'+eye(301)*1e-15);
 smn = wmn*sensordata;
 
-sel = find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
-sel = repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
-
 figure;
-% subplot(1,2,1); plot(t1,sbf(sel(1,:),:));
-subplot(1,2,1); plot(t1,sbfr(sel(1,:),:));
-subplot(1,2,2); plot(t1,s4);
-% subplot(1,2,2); plot(t1,smn(sel(1,:),:));
-
+subplot(1,2,1); plot(t1, smn(sel(1,:),:));
+subplot(1,2,2); plot(t1, s1);
+ 
 figure;
-subplot(1,2,1); plot(t1,sbf(sel(2,:),:));
-subplot(1,2,2); plot(t1,s2);
-% subplot(1,2,2); plot(t1,smn(sel(2,:),:));
-
+subplot(1,2,1); plot(t2, smn(sel(2,:),:));
+subplot(1,2,2); plot(t2, s2);
+ 
 figure;
-subplot(1,2,1); plot(t1,sbfr(sel(3,:),:));
-subplot(1,2,2); plot(t1,s1);
-% subplot(1,2,2); plot(t1,smn(sel(3,:),:));
-
+subplot(1,2,1); plot(t3, smn(sel(3,:),:));
+subplot(1,2,2); plot(t3, s3);
+ 
 figure;
-subplot(1,2,1); plot(t1,sbf(sel(4,:),:));
-subplot(1,2,2); plot(t1,s3);
-% subplot(1,2,2); plot(t1,smn(sel(4,:),:));
+subplot(1,2,1); plot(t4, smn(sel(4,:),:));
+subplot(1,2,2); plot(t4, s4);
 
+%%
 
-% compute the beamformer spatial filter with limited data available
+% compute the beamformer spatial filter with limited data
 R10  = cov(sensordata(:,491:500)');
 iR10 = inv(R10+eye(301)*0.1e-25);
 % compute the beamformer spatial filter
@@ -152,25 +201,25 @@ figure;
 subplot(2,2,1); plot(t1,sbf(sel(1,:),:)); xlabel('sbf');
 subplot(2,2,2); plot(t1,sbfr(sel(1,:),:)); xlabel('sbfr');
 subplot(2,2,3); plot(t1,sbf10(sel(1,:),:)); xlabel('sbf10');
-subplot(2,2,4); plot(t1,s4); xlabel('simulated source 4');
-
-figure;
-subplot(2,2,1); plot(t1,sbf(sel(2,:),:)); xlabel('sbf');
-subplot(2,2,2); plot(t1,sbfr(sel(2,:),:)); xlabel('sbfr');
-subplot(2,2,3); plot(t1,sbf10(sel(2,:),:)); xlabel('sbf10');
-subplot(2,2,4); plot(t1,s2); xlabel('simulated source 2');
-
-figure;
-subplot(2,2,1); plot(t1,sbf(sel(3,:),:)); xlabel('sbf');
-subplot(2,2,2); plot(t1,sbfr(sel(3,:),:)); xlabel('sbfr');
-subplot(2,2,3); plot(t1,sbf10(sel(3,:),:)); xlabel('sbf10');
 subplot(2,2,4); plot(t1,s1); xlabel('simulated source 1');
 
 figure;
-subplot(2,2,1); plot(t1,sbf(sel(4,:),:)); xlabel('sbf');
-subplot(2,2,2); plot(t1,sbfr(sel(4,:),:)); xlabel('sbfr');
-subplot(2,2,3); plot(t1,sbf10(sel(4,:),:)); xlabel('sbf10');
-subplot(2,2,4); plot(t1,s3); xlabel('simulated source 3');
+subplot(2,2,1); plot(t2,sbf(sel(2,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t2,sbfr(sel(2,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t2,sbf10(sel(2,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t2,s2); xlabel('simulated source 2');
+
+figure;
+subplot(2,2,1); plot(t3,sbf(sel(3,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t3,sbfr(sel(3,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t3,sbf10(sel(3,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t3,s3); xlabel('simulated source 3');
+
+figure;
+subplot(2,2,1); plot(t4,sbf(sel(4,:),:)); xlabel('sbf');
+subplot(2,2,2); plot(t4,sbfr(sel(4,:),:)); xlabel('sbfr');
+subplot(2,2,3); plot(t4,sbf10(sel(4,:),:)); xlabel('sbf10');
+subplot(2,2,4); plot(t4,s4); xlabel('simulated source 4');
 
 %% depth bias
 
@@ -184,19 +233,20 @@ source.avg.pow = zeros(size(source.pos,1),1);
 source.avg.pow(source.inside)=pbf;
 
 cfg = [];
-cfg.funparameter='avg.pow';
-cfg.method='slice';
+cfg.funparameter = 'avg.pow';
+cfg.method = 'slice';
 cfg.nslices = 10;
 cfg.funcolorlim=[0 0.2];
 ft_sourceplot(cfg,source);
 
 %% contrast between 2 conditions
+
 % create the sensor data for the second condition
-sensordata2 = 1.25.*leadfield1*s1+0.8.*leadfield2*s2+0.8.*leadfield3*s3+1.25.*leadfield4*s4+randn(301,1000)*0.04e-8;
+sensordata2 = 1.25.*leadfield1*s1 + 0.8.*leadfield2*s2 + 0.8.*leadfield3*s3 + 1.25.*leadfield4*s4 + randn(301,1000)*0.04e-8;
 
 % compute the covariance
 C2  = cov([sensordata sensordata2]');
-iC2 = pinv(C2); % so that we compute it only once
+iC2  = pinv(C2); % so that we compute it only once
 iCr2 = inv(C2+eye(301)*1e-19);
 
 % compute the beamformer spatial filter
@@ -223,16 +273,17 @@ ft_sourceplot(cfg,source);
 %% correlated sources
 sens = ni2_sensors('type','meg');
 headmodel = ni2_headmodel('type','spherical','nshell',1);
+
 leadfield1 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]); % position 2342 in grid
-leadfield2 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]); % position 2352 in grid
+leadfield2 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);  % position 2352 in grid
 
 % create the time course of activation
-[s1,t1]=ni2_activation('latency',.5,'frequency',10);
-[s2,t2]=ni2_activation('latency',.478,'frequency',10);
+[s1,t1] = ni2_activation('latency', .500, 'frequency', 10);
+[s2,t2] = ni2_activation('latency', .478, 'frequency', 10);
 corr(s1',s2')
 
 % create the sensor data
-sensordata = leadfield1*s1+leadfield2*s2+randn(301,1000)*0.04e-8;
+sensordata = leadfield1*s1 + leadfield2*s2 + randn(301,1000)*0.04e-8;
 
 % create a 3D grid
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
@@ -276,12 +327,12 @@ source.pos = sourcemodel.pos;
 source.dim = sourcemodel.dim;
 source.inside = sourcemodel.inside;
 source.avg.pow = zeros(size(source.pos,1),1);
-source.avg.pow(source.inside)=pbf;
+source.avg.pow(source.inside) = pbf;
  
-cfg=[];
-cfg.funparameter='avg.pow';
-cfg.method='slice';
+cfg = [];
+cfg.funparameter = 'avg.pow';
+cfg.method = 'slice';
 cfg.nslices = 4;
-cfg.slicerange=[5 8];
-cfg.funcolorlim=[0 0.08];
-ft_sourceplot(cfg,source);
+cfg.slicerange = [5 8];
+cfg.funcolorlim = [0 0.08];
+ft_sourceplot(cfg, source);

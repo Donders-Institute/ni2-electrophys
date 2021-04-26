@@ -6,7 +6,7 @@ This document contains the MATLAB exercises that form part of the course “Neur
 
 If we have measured data and a pre-computed leadfield (based on known sensor positions and a volume conductor model), then we would like to compute an estimate of the sources. Many methods use a linear matrix to compute this 'inverse solution’, as a linear weighting of the senors to compute activity at a source location.
 
-Throughout this homework, the equation representing the data and model is `y = L*s+n`. Here, `y` is the sensor data, `L` is the known leadfield, `s` is the source amplitude and `n` is sensor noise.
+Throughout this homework, the equation representing the data and model is `y = L*s+n`. Here, `y` is the sensor data, `L` is the known leadfield, `s` is the source amplitude or dipole moment and `n` is the sensor noise.
 
 ## 1.2 Getting started: setting up the MATLAB environment
 
@@ -54,7 +54,7 @@ Note that equation 1 represents a matrix multiplication of the first row of the 
 
 In this toy example, it is very straightforward to parametrize the solution. Let’s call the value that we take for s(3) the value `a`. Using this substition, and applying it to the equations above, we get:
 
-    s(1) = 2–a;
+    s(1) = 2-a;
     s(2) = 1-a;
     s(3) = a;
 
@@ -133,7 +133,7 @@ The MATLAB `pinv` function achieves the same:
 >
 > Investigate the outcome of Lpinv\*L and L\*Lpinv.
 
-In contrast to a proper inverse matrix, where both `A*A^-1 = I` and `A^-1*A = I`, the pseudoinverse exists in only one direction. This can be easily seen when inspecting `L*Lpinv` and `Lpinv*L`. The first one does not result in an identity matrix. The second equation results in an identity, because it is equivalent to `(L*L')^-1 * (L*L')`. The matrix products between the brackets are the same, both form a square matrices and they happen to be in general invertible, thus the product between the inverse of that product with itself will yield `I`.
+In contrast to a proper inverse matrix, where both `A*A^-1 = I` and `A^-1*A = I`, the pseudoinverse exists in only one direction. This can be easily seen when inspecting `Lpinv*L` and `L*Lpinv`. The first one does not result in an identity matrix. The second equation results in an identity, because it is equivalent to `(L*L')^-1 * (L*L')`. The matrix products between the brackets are the same, both form a square matrices and they happen to be in general invertible, thus the product between the inverse of that product with itself will yield `I`.
 
 ## 2.4 Pseudo-inverse of leadfield gives minimum norm
 
@@ -193,9 +193,9 @@ We start by simulating some MEG data that contains two active sources.
     [data2, time2] = ni2_activation('frequency', 11, 'latency', 0.48);
     sens = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]); % position 2352 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
-    sensordata = leadfield1_data1+leadfield2_data2;
+    leadfield1 = ni2_leadfield(sens, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
+    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
+    sensordata = leadfield1*data1 + leadfield2*data2;
 
 Try and understand the steps above. Pay particular attention to the parameters of the simulated dipoles.
 
@@ -249,9 +249,9 @@ Let’s now simulate MEG sensor data with added noise:
     [data2, time2] = ni2_activation('frequency', 11, 'latency', 0.48);
     sens = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]); % position 2352 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
-    sensordata = leadfield1_data1+leadfield2_data2+randn(301, 1000)*.7e-10;
+    leadfield1 = ni2_leadfield(sens, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
+    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
+    sensordata = leadfield1*data1 + leadfield2*data2 + randn(301, 1000)*.7e-10;
 
 Create a FieldTrip data structure:
 

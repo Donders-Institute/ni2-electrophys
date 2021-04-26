@@ -6,11 +6,11 @@ This document contains the MATLAB exercises that form part of the course “Neur
 
 Beamforming is the third type of strategy that can be used for source reconstruction of EEG/MEG data that is discussed in this course.
 
-As a brief recapitulation, the **first strategy** is the dipole modeling approach, where the underlying assumption is that the pattern in the observed data can be explained by a limited number of neural sources, that are modelled as equivalent current dipoles. The goal is now to find the parameters for the model that optimally explains the observed sensor-level topography. These parameters pertain to the number, location and orientation of the dipoles, and the optimal model is determined by minimizing the error between the model and the observed data.
+As a brief recapitulation, the **first strategy** is the dipole modeling approach, where the underlying assumption is that the pattern in the observed data can be explained by a limited number of neural sources that are modelled as equivalent current dipoles. The goal is now to find the parameters for the model that optimally explains the observed sensor-level topography. These parameters pertain to the number, location and orientation of the dipoles, and the optimal model is determined by minimizing the error between the model and the observed data.
 
 The **second strategy** we discussed was distributed source modeling, where minimum norm estimation was treated in some more detail. In this approach, the observed data is assumed to be determined by a mixing of many active sources, where the number of active sources is much higher than the number of observed channels. This leads to an underdetermined problem, and one way to solve this is to assume that a good guess of the distribution of the source amplitudes has the lowest possible norm. One important feature of distributed source models is the fact that the amplitudes of the individual sources are estimated in a single inversion step.
 
-The **third strategy** that will be treated here is a so-called scanning method (we will specifically be dealing with beamforming), where the amplitude at a predefined set of source locations is estimated iteratively, that is, one source at a time. This difference with distributed source modeling has some important consequences, which we will return to later in these exercises. The key feature of beamforming is that no prior assumption about the number of sources is made. Rather, for each location that we choose to evaluate, we ask ourselves the question: 'What would the the best estimate of the dipole moment at this location?’ It turns out, that if we assume the underlying sources to be uncorrelated over time we can get quite good estimates of our sources’ activation time courses using beamforming.
+The **third strategy** that will be treated here is a so-called scanning method (we will specifically be dealing with beamforming), where the amplitude at a predefined set of source locations is estimated iteratively, that is, for one source location at a time. This difference with distributed source modeling has some important consequences, which we will return to later in these exercises. The key feature of beamforming is that no prior assumption about the number of sources is made. Rather, for each location that we choose to evaluate, we ask ourselves the question: 'What would the the best estimate of the dipole moment at this location?’ It turns out, that if we assume the underlying sources to be uncorrelated over time we can get quite good estimates of our sources’ activation time courses using beamforming.
 
 The 'best estimate’ in the previous question is more specifically operationalised as the estimate that best captures the activity that can originate from that location while optimally suppressing interference from sources at other locations. When we use so-called adaptive beamformers for this, we need not only the biophysically constraining forward model (i.e. the leadfield matrix), we also need the sensor-level data, or more specifically the sensor-level covariance matrix. Before we will start playing with the beamformer and get a feel for how and why it works, the next section will deal with the concept of the sensor-level covariance matrix.
 
@@ -30,7 +30,7 @@ After this section you will
 
 -   Understand the concept of a covariance matrix.
 -   Argue that the sensor covariance matrix represents a mixture of the leadfield outer products of all pairs of active sources.
--   Understand that if the sources underlying the sensor covariance matrix are uncorrelated over time, the covariance matrix reduces to a weighted sum of the leadfield outer products of only the active sources.
+-   Understand that, if the sources underlying the sensor covariance matrix are uncorrelated over time, the covariance matrix reduces to a weighted sum of the leadfield outer products of only the active sources.
 
 ## 2.1 The concept of covariance
 
@@ -79,9 +79,9 @@ Now we can introduce covariance between the vectors x and y by adding some share
     a = 1;
     b = 1;
     c = randn(1, 100);
-    x2 = x  + a.*c;
+    x2 = x  + a .* c;
     x2 = x2 - mean(x2);
-    y2 = y  + b.*c;
+    y2 = y  + b .* c;
     y2 = y2 - mean(y2);
 
     covxy2 = (x2*y2')/99;
@@ -90,10 +90,10 @@ Now we can introduce covariance between the vectors x and y by adding some share
 
 > Explore the effect of changing the parameters `a` and `b`. Observe what happens to the covariance and what changes in the figures when you increase/decrease the value for a and b (they don’t need to have the same value), or when `a` and `b` have opposite sign (they are allowed to be negative).
 
-Up until now we have explored the covariance between two variables represented as vectors. It may come as no surprise that we can perform the same multiplication operation to a pair of matrices. If we consider a sensor-level data matrix X with the channels in the rows and the time points in the columns (and with the mean across columns subtracted from each column), when we do `X*X'` we will get an n x n covariance matrix (strictly speaking scaled with the number of time points-1: for the following let’s forget about this scaling, and also let’s assume the individual rows to have a mean value of 0), where n is the number of channels. Each element `c(i, j)` in this matrix, let’s call this matrix `C` reflects the covariance between the i-th and j-th channel. There are a few remarks to be made about a covariance matrix:
+Up until now we have explored the covariance between two variables represented as vectors. It may come as no surprise that we can perform the same multiplication operation to a pair of matrices. If we consider a sensor-level data matrix X with the channels in the rows and the time points in the columns (and with the mean across columns subtracted from each column), when we do `X*X'` we will get an n x n covariance matrix (strictly speaking scaled with the number of time points minus one: for the following let’s forget about this scaling, and also let’s assume the individual rows to have a mean value of 0), where n is the number of channels. Each element `c(i, j)` in this matrix, let’s call this matrix `C` reflects the covariance between the i-th and j-th channel. There are a few remarks to be made about a covariance matrix:
 
 1. When a covariance matrix is mirrored across the main diagonal of the matrix, you will get the same values.
-2. The elements on the main diagonal contain the auto-covariance between each channel and itself, and are always positive values.
+2. The elements on the main diagonal contain the auto-covariance between each channel and itself, and are always positive values. These values represent the variance of each channel.
 
 > Verify remark 1.
 >
@@ -122,14 +122,12 @@ There is a basic rule in matrix algebra that states that `(A*B)'` is the same as
 
 Now the above equation looks complicated, but if we realize that `si*sj'` represents the covariance (or auto-covariance) between the sources `i` and `j`, and that these are scalar values (which means that it does not matter in which order you multiply this in a matrix multiplication), we can rewrite the above equation as:
 
-    C = var(s1)*l1*l1' + cov(s2, s1)*l2*l1' + … + cov(sn, s1)*ln*l1' + …
-        cov(s1, s2)*l1*l2' + var(s2)*l2*l2' + … + cov(sn, s2)*ln*l2' + …
+    C =     var(s1)*l1*l1' + cov(s2, s1)*l2*l1' + … + cov(sn, s1)*ln*l1' + …
+        cov(s1, s2)*l1*l2' +     var(s2)*l2*l2' + … + cov(sn, s2)*ln*l2' + …
         …  
-        cov(s1, sn)*l1*ln' + cov(s2, sn)*l2*ln' + … + var(sn)*ln*ln';
+        cov(s1, sn)*l1*ln' + cov(s2, sn)*l2*ln' + … +     var(sn)*ln*ln';
 
-The terms `li*lj'` are also called vector outer-products, so in words the above equation means:
-
-The covariance matrix can be represented as a _weighted sum_ of the leadfield outer products between all _pairs of sources_, where the weights are based on the covariance between the corresponding pairs of sources.
+The terms `li*lj'` are also called vector outer-products, so in words the above equation means that the covariance matrix can be represented as a _weighted sum_ of the leadfield outer products between all _pairs of sources_, where the weights are based on the covariance between the corresponding pairs of sources.
 
 This is a very important feature of the covariance matrix that is exploited by the beamformer, and is also exploited when we unmix the data matrix based on a principal components analysis (which could be the topic of another session).
 
@@ -146,24 +144,26 @@ After this section, you will
 
 ## 3.1 The formulation of the beamforming algorithm.
 
-As already mentioned in the introduction section, the beamforming approach is a so-called scanning method, where sequentially a set of locations in the brain is investigated, where the question asked is 'What would the the best estimate of the dipole moment at this location?’. For each of the locations investigated the beamformer algorithm computes a spatial filter, also known as a set of weights (hence the convention to denote the spatial filter with the letter 'w’) that fulfills two criteria:
+As already mentioned in the introduction section, the beamforming approach is a so-called scanning method, where we investigate a set of locations in the brain sequentially, where the question asked repeatedly is 'What would be the best estimate of the dipole moment at this location?’.
+
+For each of the locations investigated the beamformer algorithm computes a spatial filter, also known as a set of weights (hence the convention to denote the spatial filter with the letter 'w’) that fulfills two criteria:
 
 1. The so-called filter gain is equal to 1.
 2. The filter output should have minimum variance.
 
 The second criterion is specific to the type of beamformer we are typically using, which is known as the minimum-variance beamformer.
 
-Requiring a filter gain of 1 is nothing else than 'what you get is what you see’. In other words, the amplitude of the source signal that is coming from a particular location in the brain (which is represented at the channels by the leadfield from that location) is not attenuated by the spatial filter that is estimated for that location. In a mathematical formula this means wi'li=1. The second criterion aims that activity that is not coming from the location under investigation does not affect ('leak into’) the estimate we’re currently interested in. 'Filter output’ here means the estimated source activity. It makes sense to require the variance of this filter output to be as low as possible, because if we are investigating a location from which no source activity is emanating, we want the estimated activity to be as low as possible.
+Requiring a filter gain of 1 is nothing else than 'what you get is what you see’. In other words, the amplitude of the source signal that is coming from a particular location in the brain (which is represented at the channels by the leadfield from that location) is not attenuated by the spatial filter that is estimated for that location. In a mathematical formula this means `wi' * li = 1`. The second criterion aims that activity that is not coming from the location under investigation does not affect ('leak into’) the estimate we’re currently interested in. 'Filter output’ here means the estimated source activity. It makes sense to require the variance of this filter output to be as low as possible, because if we are investigating a location from which no source activity is emanating, we want the estimated activity to be as low as possible.
 
-It turns out to be the case that the two criteria expressed above are fulfilled by a spatial filter that is defined as:
+It turns out that the two criteria expressed above are fulfilled by a spatial filter computed as:
 
     w' = inv(lf'*inv(C)*lf)*lf'*inv(C)   
 
-The beamformer makes an accurate reconstruction of the time course of the underlying sources provided the individual sources are uncorrelated over time. In reality neural sources are hardly even uncorrelated, and in practical situations the beamformer is tolerant against moderate levels of source correlation (more about this later). It can be easily seen that the above formulation satisfies criterion 1:
+The beamformer makes an accurate reconstruction of the time course of the underlying sources provided the individual sources are uncorrelated over time. In reality neural sources are hardly even totally uncorrelated, but in practical situations the beamformer is tolerant against moderate levels of source correlation (more about this later). It can be easily seen that the above formulation satisfies criterion 1:
 
     w'*lf = inv(lf'*inv(C)*lf) * (lf'*inv(C)*lf) = I
 
-The proof of the fact that it also satisfies the second criterion can be demonstrated with [Lagrange multipliers](https://en.wikipedia.org/wiki/Lagrange_multiplier), but this falls beyond the scope of this course.
+The proof that it also satisfies the second criterion can be demonstrated with [Lagrange multipliers](https://en.wikipedia.org/wiki/Lagrange_multiplier), but this falls beyond the scope of this course.
 
 The filter output is defined as: `w'*X`
 
@@ -178,17 +178,18 @@ Let us now create some simulated data to demonstrate the beamformer.
 
     sens = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]); % position 2352 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
-    leadfield3 = ni2_leadfield(sens, headmodel, [4.2 -2 7 0 0.2 0.7]); % 2674
-    leadfield4 = ni2_leadfield(sens, headmodel, [-2 -7.8 3 -1 0 0]); % 1110
 
-    [s1, t1] = ni2_activation('latency',.45, 'frequency', 3);
-    [s2, t2] = ni2_activation('latency',.5);
-    [s3, t3] = ni2_activation('latency',.55, 'frequency', 30);
-    [s4, t4] = ni2_activation('latency',.5, 'frequency', 15);
+    leadfield1 = ni2_leadfield(sens,headmodel,[-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
+    leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
+    leadfield3 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);     % position 2352 in the grid
+    leadfield4 = ni2_leadfield(sens,headmodel,[4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
 
-    sensordata = leadfield1_s1+leadfield2_s2+leadfield3_s3+leadfield4_s4+randn(301, 1000)*0.04e-8;
+    [s1, t1] = ni2_activation('latency', .45, 'frequency',  3);
+    [s2, t2] = ni2_activation('latency', .50, 'frequency', 10);
+    [s3, t3] = ni2_activation('latency', .50, 'frequency', 15);
+    [s4, t4] = ni2_activation('latency', .55, 'frequency', 30);
+
+    sensordata = leadfield1*s1 + leadfield2*s2 + leadfield3*s3 + leadfield4*s4 + randn(301, 1000)*0.04e-8;
 
 We are first going to compute the beamformer spatial filters by hand, to demonstrate the recipe. As mentioned in the previous section, the beamformer needs the sensor-level covariance matrix and the leadfields for the locations at which the spatial filters are going to be estimated. For now we will be using a 3-dimensional 'grid’, where the source locations are 1 cm apart. Also, we will use FieldTrip to efficiently compute the leadfields. In principle we could achieve the same using the `ni2_leadfield` function, but the first approach is much faster:
 
@@ -197,24 +198,25 @@ We are first going to compute the beamformer spatial filters by hand, to demonst
     cfg = [];
     cfg.grid = sourcemodel;
     cfg.grad = sens;
-    cfg.vol = headmodel;
+    cfg.headmodel = headmodel;
     sourcemodel = ft_prepare_leadfield(cfg);
+
     L = cat(2, sourcemodel.leadfield{sourcemodel.inside});
 
 We also need the covariance of the sensor-level data:
 
     M = mean(sensordata, 2);
     M = repmat(M, 1, 1000);
-    C=((sensordata-M)*(sensordata-M)')./999;
+    C = ((sensordata-M)*(sensordata-M)')./999;
 
 Now we also compute the inverse of the covariance matrix, because it will be used repeatedly, and it slows down the computations when it has  to be recomputed all over again.
 
     iC = inv(C);
 
     for ii=1:size(L, 2)/3
-      indx=(ii-1)*3+(1:3);
-      Lr = L(:, indx);  % Lr is the leadfield for source r
-      wbf(indx,:)=pinv(Lr'*iC_Lr)*Lr'*iC;
+      indx = (ii-1)*3 + (1:3);
+      Lr = L(:, indx);  % Lr is the Nx3 leadfield matrix for source r
+      wbf(indx,:) = pinv(Lr'*iC*Lr)*Lr'*iC;
     end
 
 > We can now compute the source time courses reconstructed with the beamformer.  Do this and call the result `sbf`.
@@ -224,7 +226,7 @@ We can now inspect what the shape of the reconstructed source time course is at 
     sel = find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
     sel = repmat((sel-1)*3, 1, 3)+repmat(1:3, numel(sel), 1);
 
-Each row in the matrix sel (a triplet of consecutive numbers) now points to rows in the matrix of wbf (and sbf) that we are going to explore first.
+Each row in the matrix `sel` is a triplet of consecutive numbers that points to rows in the matrix of `wbf` (and `sbf`) that we are going to explore first.
 
     figure;
     subplot(1, 2, 1); plot(t1, sbf(sel(1,:),:));
@@ -244,7 +246,7 @@ Each row in the matrix sel (a triplet of consecutive numbers) now points to rows
 
 As you may have noticed, the resulting time courses are a bit noisy. This is due to the noise in the data being projected onto the estimated source time courses. This can be accounted for by a mathematical trick that is called regularization. This boils down to adding a scaled identity matrix to the sensor covariance matrix prior to calculating the inverse. This makes the mathematical inversion of the covariance matrix less sensitive to. The regularized inverse of the covariance matrix can be computed as:
 
-    iCr = inv(C+eye(301)*5e-19);
+    iCr = inv(C + eye(301)*5e-19);
 
 > Compute the beamformer spatial filters the same way as above, but now using the regularized inverse covariance matrix. Also compute the reconstructed time courses of the sources. Call the spatial filters and the source time courses `wbfr` and `sbfr`, respectively.
 
@@ -282,7 +284,7 @@ Now, create a FieldTrip type 'source’-structure, and use ft_sourceplot to visu
     cfg = [];
     cfg.funparameter = 'avg.pow';
     cfg.method = 'slice';
-    cfg.nslices=10;
+    cfg.nslices = 10;
     cfg.funcolorlim = [0 0.2];
     ft_sourceplot(cfg, source);
 
@@ -322,12 +324,12 @@ We can now create a FieldTrip style source-structure, and store in the field `av
     source.dim = sourcemodel.dim;
     source.inside = sourcemodel.inside;
     source.avg.pow = zeros(size(source.pos, 1), 1);
-    source.avg.pow(source.inside)=(pbfr1-pbfr2)./(pbfr1+pbfr2);
+    source.avg.pow(source.inside) = (pbfr1-pbfr2)./(pbfr1+pbfr2);
 
     cfg = [];
     cfg.funparameter = 'avg.pow';
     cfg.method = 'slice';
-    cfg.nslices=10;
+    cfg.nslices = 10;
     cfg.funcolorlim = [-.2 .2];
     ft_sourceplot(cfg, source);
 
@@ -342,14 +344,16 @@ First, we create some sensor data:
     sens = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
     leadfield1 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]); % position 2352 in grid
+    leadfield2 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);  % position 2352 in grid
 
     % create the time course of activation
-    [s1, t1] = ni2_activation('latency',.5, 'frequency', 10);
-    [s2, t2] = ni2_activation('latency',.4, 'frequency', 10);
+    [s1, t1] = ni2_activation('latency', .5, 'frequency', 10);
+    [s2, t2] = ni2_activation('latency', .4, 'frequency', 10);
 
     % create the sensor data
-    sensordata = leadfield1_s1+leadfield2_s2+randn(301, 1000)*0.04e-8;
+    sensordata = leadfield1*s1 + ...
+                 leadfield2*s2 + ...
+                 randn(301, 1000)*0.04e-8;
 
 Now we can assess the correlation between `s1` and `s2`, and we will note that it is significant:
 
@@ -362,7 +366,7 @@ Now we can assess the correlation between `s1` and `s2`, and we will note that i
 > Hint 1: use the following code to identify the row-indices of these sources in the matrix of the reconstructed source data:
 >
 >     sel = find(ismember(find(sourcemodel.inside), [2342 2352]));
->     sel = repmat((sel-1)*3,1,3)+repmat(1:3,numel(sel),1);
+>     sel = repmat((sel-1)*3,1,3) + repmat(1:3,numel(sel),1);
 >
 > Hint 2: use some of the plotting code in section 3.2 to visualize the appropriate time courses.
 

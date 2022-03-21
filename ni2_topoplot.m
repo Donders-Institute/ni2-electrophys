@@ -51,4 +51,9 @@ if ~isfield(cfg, 'layout')
   cfg.layout = ft_prepare_layout(tmpcfg);
 end
 
+cfg.colormap = '*RdBu';
+cfg.zlim = 'maxabs';
 figure; ft_topoplotER(cfg, data);
+
+% update the figure immediately
+drawnow

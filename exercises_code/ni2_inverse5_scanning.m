@@ -45,8 +45,8 @@ figure; plot(x); hold on; plot(y,'r');
 sens = ni2_sensors('type','eeg');
 headmodel = ni2_headmodel('type','spherical','nshell',3);
 
-[data1,time]=ni2_activation;
-[data2,time]=ni2_activation('frequency',11,'latency',0.48);
+[data1,time] = ni2_activation;
+[data2,time] = ni2_activation('frequency',11,'latency',0.48);
 
 leadfield1 = ni2_leadfield(sens,headmodel,[ 4.9 0 6.2 0 1 0]);
 leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);
@@ -144,7 +144,7 @@ iCr = inv(C + eye(301)*5e-19);
 for ii = 1:size(L,2)/3
   indx=(ii-1)*3+(1:3);
   Lr = L(:,indx);  % Lr is the leadfield for source r
-  wbfr(indx,:)  = pinv(Lr'*iCr*Lr)*Lr'*iCr;
+  wbfr(indx,:) = pinv(Lr'*iCr*Lr)*Lr'*iCr;
 end
 sbfr  = wbfr * sensordata;
 
@@ -297,7 +297,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 cfg = [];
 cfg.grid = sourcemodel;
 cfg.grad = sens;
-cfg.vol  = headmodel;
+cfg.headmodel = headmodel;
 % cfg.normalize = 'yes';
 sourcemodel = ft_prepare_leadfield(cfg);
 
@@ -311,7 +311,7 @@ iCr = inv(C+eye(301)*5e-19);
 for ii = 1:size(L,2)/3
   indx=(ii-1)*3+(1:3);
   Lr = L(:,indx);  % Lr is the leadfield for source r
-  wbfr(indx,:)=pinv(Lr'*iCr*Lr)*Lr'*iCr;
+  wbfr(indx,:) = pinv(Lr'*iCr*Lr)*Lr'*iCr;
 end
 sbfr = wbfr*sensordata;
 

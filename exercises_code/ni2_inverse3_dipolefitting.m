@@ -115,14 +115,14 @@ data.avg = sensordata;
 data.time = time;
 data.label = sens.label;
 data.elec = sens;
-data.dimord='chan_time';
+data.dimord ='chan_time';
 
-cfg=[];
-cfg.gridsearch='no';
-cfg.model='regional';
-cfg.vol = headmodel;
-cfg.latency=[0.49 0.51];
-cfg.nonlinear='yes';
+cfg = [];
+cfg.gridsearch = 'no';
+cfg.model = 'regional';
+cfg.headmodel = headmodel;
+cfg.latency = [0.49 0.51];
+cfg.nonlinear = 'yes';
 cfg.numdipoles = 1;
 dip = ft_dipolefitting(cfg,data);
 
@@ -131,8 +131,8 @@ figure; ni2_topoplot(sens,dip.Vdata(:,11));
 
 %% Section 6
 
-[data,time]=ni2_activation;
-[data2,time]=ni2_activation('frequency',11,'latency',0.48);
+[data,time] = ni2_activation;
+[data2,time] = ni2_activation('frequency',11,'latency',0.48);
 sens = ni2_sensors('type','eeg');
 headmodel = ni2_headmodel('type','spherical','nshell',3);
 leadfield = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);
@@ -152,7 +152,7 @@ for k = 1:size(pos,1)
   sumsq(k,1)=sum((topo_observed(:)-topo_modelled(:)).^2)./sum(topo_observed(:).^2);
 end
 
-[m,ix]=min(sumsq);
+[m,ix] = min(sumsq);
 pos(ix,:)
 
 data=[];
@@ -160,14 +160,14 @@ data.avg = sensordata;
 data.time = time;
 data.label = sens.label;
 data.elec = sens;
-data.dimord='chan_time';
+data.dimord = 'chan_time';
 
 cfg=[];
-cfg.gridsearch='no';
-cfg.model='regional';
-cfg.vol = headmodel;
-cfg.latency=[0.49 0.51];
-cfg.nonlinear='yes';
+cfg.gridsearch = 'no';
+cfg.model = 'regional';
+cfg.headmodel = headmodel;
+cfg.latency = [0.49 0.51];
+cfg.nonlinear = 'yes';
 cfg.numdipoles = 1;
 dip = ft_dipolefitting(cfg,data);
 

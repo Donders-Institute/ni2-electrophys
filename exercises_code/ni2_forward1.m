@@ -57,7 +57,7 @@ headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
 sens = ni2_sensors('type', 'eeg');
 
 figure; hold on;
-ft_plot_vol(headmodel,'edgecolor','none');
+ft_plot_headmodel(headmodel,'edgecolor','none');
 ft_plot_sens(sens);
 
 dippar1 = [0 0 6 1 0 0];

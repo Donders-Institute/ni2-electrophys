@@ -32,7 +32,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -67,7 +67,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -82,7 +82,7 @@ figure; plot(source_noise.time,source_noise.avg.mom{2713},'linewidth', 2); legen
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -103,7 +103,7 @@ figure; plot(residual');
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -124,7 +124,7 @@ figure; plot(residual');
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';

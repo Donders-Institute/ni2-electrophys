@@ -20,7 +20,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel                = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -50,7 +50,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel                = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -84,7 +84,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
 cfg.grid               = sourcemodel;
-cfg.vol                = headmodel;
+cfg.headmodel                = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';

@@ -237,7 +237,7 @@ grid = rmfield(grid2,'leadfield');
 cfg = [];
 cfg.grid = grid;
 cfg.grad = datanoisenoise.grad;
-cfg.vol = vol_1sph;
+cfg.headmodel = vol_1sph;
 grid_1sph = ft_prepare_leadfield(cfg, datanoisenoise);
 
 % Convert data from 'raw' to 'timelock' and to 'freq';
@@ -256,7 +256,7 @@ tlock_avg = ft_timelockanalysis(cfg,datanoisenoise);
 cfg = [];
 cfg.method = 'mne';
 cfg.grid = grid2;
-cfg.vol = vol;
+cfg.headmodel = vol;
 cfg.snr = 1;
 mne_grid2_avg = ft_sourceanalysis(cfg, tlock_avg);
 
@@ -277,7 +277,7 @@ anat
 cfg = [];
 cfg.method = 'mne';
 cfg.grid = grid_3sph;
-cfg.vol = vol_3sph;
+cfg.headmodel = vol_3sph;
 cfg.elec = elec;
 cfg.lambda = '10%';
 source_3sph = ft_sourceanalysis(cfg, tlock)
@@ -285,7 +285,7 @@ source_3sph = ft_sourceanalysis(cfg, tlock)
 cfg = [];
 cfg.method = 'mne';
 cfg.grid = grid_1sph;
-cfg.vol = vol_1sph;
+cfg.headmodel = vol_1sph;
 cfg.elec = elec;
 cfg.lambda = '10%';
 source_1sph = ft_sourceanalysis(cfg, tlock)

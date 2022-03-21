@@ -199,7 +199,7 @@ And the cfg-structure:
     cfg = [];
     cfg.gridsearch = 'no';
     cfg.model = 'regional';
-    cfg.vol = headmodel;
+    cfg.headmodel = headmodel;
     cfg.latency = [0.49 0.51];
     cfg.nonlinear = 'yes';
     cfg.numdipoles = 1;
@@ -265,7 +265,7 @@ Now we are going to use the FieldTrip function to fit a single dipole:
     cfg = [];
     cfg.gridsearch = 'no';
     cfg.model = 'regional';
-    cfg.vol = headmodel;
+    cfg.headmodel = headmodel;
     cfg.latency = [0.49 0.51];
     cfg.nonlinear = 'yes';
     cfg.numdipoles = 1;

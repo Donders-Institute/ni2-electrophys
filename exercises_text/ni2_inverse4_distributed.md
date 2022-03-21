@@ -215,7 +215,7 @@ Next we will make a source reconstruction using the 'mneâ€™ method of FieldTripâ
 
     cfg                    = [];
     cfg.grid               = sourcemodel;
-    cfg.vol                = headmodel;
+    cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
     cfg.mne.scalesourcecov = 'yes';
@@ -271,7 +271,7 @@ Do the source reconstruction:
 
     cfg                    = [];
     cfg.grid               = sourcemodel;
-    cfg.vol                = headmodel;
+    cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
     cfg.mne.scalesourcecov = 'yes';
@@ -287,7 +287,7 @@ Do the source reconstruction with regularisation:
 
     cfg                    = [];
     cfg.grid               = sourcemodel;
-    cfg.vol                = headmodel;
+    cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
     cfg.mne.scalesourcecov = 'yes';
@@ -317,7 +317,7 @@ As we have seen in the previous sections, the minimum-norm estimate has a tenden
 
     cfg                    = [];
     cfg.grid               = sourcemodel;
-    cfg.vol                = headmodel;
+    cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
     cfg.mne.scalesourcecov = 'yes';

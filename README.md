@@ -14,3 +14,9 @@ The part on inverse modeling is further split over these three:
 -   Parametric models (dipole fitting)
 -   Distributed models (linear modeling)
 -   Scanning methods (beamformers)
+
+## Frequently asked questions
+
+### MATLAB complains that mexmaci64 cannot be opened because the developer cannot be verified
+
+This happens on recent macOS computers, see [this page](https://www.fieldtriptoolbox.org/faq/mexmaci64_cannot_be_opened_because_the_developer_cannot_be_verified/) to solve it.

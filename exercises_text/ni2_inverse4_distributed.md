@@ -214,7 +214,7 @@ Next we will make a source reconstruction using the 'mne’ method of FieldTrip�
     sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', 1);
 
     cfg                    = [];
-    cfg.grid               = sourcemodel;
+    cfg.sourcemodel        = sourcemodel;
     cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
@@ -270,7 +270,7 @@ In the field 'cov’ we create a covariance matrix that was designed to represen
 Do the source reconstruction:
 
     cfg                    = [];
-    cfg.grid               = sourcemodel;
+    cfg.sourcemodel        = sourcemodel;
     cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
@@ -286,7 +286,7 @@ The `cfg.mne.lambda` option was set to 0. This means that the inverse solution f
 Do the source reconstruction with regularisation:
 
     cfg                    = [];
-    cfg.grid               = sourcemodel;
+    cfg.sourcemodel        = sourcemodel;
     cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';
@@ -316,7 +316,7 @@ Another way to explore the effect of regularisation is to look at the residuals 
 As we have seen in the previous sections, the minimum-norm estimate has a tendency to over-estimate the amplitude of dipoles that are close to the surface. This feature is a direct consequence of the minimum-norm constraint. In order to explain all measured data with a source model that has the lowest possible norm, the deep sources will be penalized because these need to have a strong activation in order to be picked up by the sensors in the first place.
 
     cfg                    = [];
-    cfg.grid               = sourcemodel;
+    cfg.sourcemodel        = sourcemodel;
     cfg.headmodel          = headmodel;
     cfg.method             = 'mne';
     cfg.mne.prewhiten      = 'yes';

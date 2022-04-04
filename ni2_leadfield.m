@@ -29,9 +29,9 @@ else
   cfg.grad = sens;
 end
 cfg.headmodel   = headmodel;
-cfg.grid.pos    = dippar(:,1:3);
-cfg.grid.inside = 1:ndip;
-cfg.grid.unit   = headmodel.unit;
+cfg.sourcemodel.pos    = dippar(:,1:3);
+cfg.sourcemodel.inside = 1:ndip;
+cfg.sourcemodel.unit   = headmodel.unit;
 cfg.reducerank  = 'no';
 if strcmp(headmodel.type, 'singleshell')
   cfg.singleshell.batchsize = 2500;

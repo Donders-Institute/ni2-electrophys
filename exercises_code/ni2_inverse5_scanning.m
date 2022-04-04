@@ -92,7 +92,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 % use FieldTrip to quickly compute the forward model
 cfg = [];
-cfg.grid = sourcemodel;
+cfg.sourcemodel = sourcemodel;
 cfg.grad = sens;
 cfg.headmodel  = headmodel;
 % cfg.normalize = 'yes';
@@ -295,7 +295,7 @@ sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 % use FieldTrip to quickly compute the forward model
 cfg = [];
-cfg.grid = sourcemodel;
+cfg.sourcemodel = sourcemodel;
 cfg.grad = sens;
 cfg.headmodel = headmodel;
 % cfg.normalize = 'yes';

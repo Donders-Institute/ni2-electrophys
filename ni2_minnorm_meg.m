@@ -235,7 +235,7 @@ load meg_leadfields.mat
 grid = rmfield(grid2,'leadfield');
 
 cfg = [];
-cfg.grid = grid;
+cfg.sourcemodel = grid;
 cfg.grad = datanoisenoise.grad;
 cfg.headmodel = vol_1sph;
 grid_1sph = ft_prepare_leadfield(cfg, datanoisenoise);
@@ -255,7 +255,7 @@ tlock_avg = ft_timelockanalysis(cfg,datanoisenoise);
 % leadfields based on the three different head model options
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid2;
+cfg.sourcemodel = grid2;
 cfg.headmodel = vol;
 cfg.snr = 1;
 mne_grid2_avg = ft_sourceanalysis(cfg, tlock_avg);
@@ -276,7 +276,7 @@ anat
 
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid_3sph;
+cfg.sourcemodel = grid_3sph;
 cfg.headmodel = vol_3sph;
 cfg.elec = elec;
 cfg.lambda = '10%';
@@ -284,7 +284,7 @@ source_3sph = ft_sourceanalysis(cfg, tlock)
 
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid_1sph;
+cfg.sourcemodel = grid_1sph;
 cfg.headmodel = vol_1sph;
 cfg.elec = elec;
 cfg.lambda = '10%';

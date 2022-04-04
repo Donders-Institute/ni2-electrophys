@@ -31,7 +31,7 @@ data.dimord = 'chan_time';
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
+cfg.sourcemodel        = sourcemodel;
 cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
@@ -66,7 +66,7 @@ data.dimord = 'chan_time';
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
+cfg.sourcemodel        = sourcemodel;
 cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
@@ -81,7 +81,7 @@ figure; plot(source_noise.time,source_noise.avg.mom{2347},'linewidth', 2); legen
 figure; plot(source_noise.time,source_noise.avg.mom{2713},'linewidth', 2); legend({'x' 'y' 'z'});
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
+cfg.sourcemodel        = sourcemodel;
 cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
@@ -102,7 +102,7 @@ residual = sensordata-model;
 figure; plot(residual');
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
+cfg.sourcemodel        = sourcemodel;
 cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
@@ -123,7 +123,7 @@ residual = sensordata-model;
 figure; plot(residual');
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
+cfg.sourcemodel        = sourcemodel;
 cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';

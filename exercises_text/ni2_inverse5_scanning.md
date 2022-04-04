@@ -196,7 +196,7 @@ We are first going to compute the beamformer spatial filters by hand, to demonst
     sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', 1);
 
     cfg = [];
-    cfg.grid = sourcemodel;
+    cfg.sourcemodel = sourcemodel;
     cfg.grad = sens;
     cfg.headmodel = headmodel;
     sourcemodel = ft_prepare_leadfield(cfg);

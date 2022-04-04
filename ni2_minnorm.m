@@ -31,17 +31,17 @@ load standard_grid3d8mm;  % 'grid' with 5302 points inside MNI head
 
 % 5) Leadfield
 cfg = [];
-cfg.grid = grid;
+cfg.sourcemodel = grid;
 cfg.elec = elec;
 cfg.headmodel = vol_bem;
 grid_bem = ft_prepare_leadfield(cfg, tlock);
 cfg = [];
-cfg.grid = grid;
+cfg.sourcemodel = grid;
 cfg.elec = elec;
 cfg.headmodel = vol_3sph;
 grid_3sph = ft_prepare_leadfield(cfg, tlock);
 cfg = [];
-cfg.grid = grid;
+cfg.sourcemodel = grid;
 cfg.elec = elec;
 cfg.headmodel = vol_1sph;
 grid_1sph = ft_prepare_leadfield(cfg, tlock);
@@ -50,7 +50,7 @@ grid_1sph = ft_prepare_leadfield(cfg, tlock);
 % leadfields based on the three different head model options
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid_bem;
+cfg.sourcemodel = grid_bem;
 cfg.headmodel = vol_bem;
 cfg.elec = elec;
 cfg.lambda = '10%';
@@ -58,7 +58,7 @@ source_bem = ft_sourceanalysis(cfg, tlock)
 
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid_3sph;
+cfg.sourcemodel = grid_3sph;
 cfg.headmodel = vol_3sph;
 cfg.elec = elec;
 cfg.lambda = '10%';
@@ -66,7 +66,7 @@ source_3sph = ft_sourceanalysis(cfg, tlock)
 
 cfg = [];
 cfg.method = 'mne';
-cfg.grid = grid_1sph;
+cfg.sourcemodel = grid_1sph;
 cfg.headmodel = vol_1sph;
 cfg.elec = elec;
 cfg.lambda = '10%';

@@ -19,8 +19,8 @@ data.dimord = 'chan_time';
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
-cfg.headmodel                = headmodel;
+cfg.sourcemodel        = sourcemodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -49,8 +49,8 @@ data.dimord = 'chan_time';
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
-cfg.headmodel                = headmodel;
+cfg.sourcemodel        = sourcemodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';
@@ -83,8 +83,8 @@ data.dimord = 'chan_time';
 sourcemodel = ni2_sourcemodel('type','grid','resolution',1);
 
 cfg                    = [];
-cfg.grid               = sourcemodel;
-cfg.headmodel                = headmodel;
+cfg.sourcemodel        = sourcemodel;
+cfg.headmodel          = headmodel;
 cfg.method             = 'mne';
 cfg.mne.prewhiten      = 'yes';
 cfg.mne.scalesourcecov = 'yes';

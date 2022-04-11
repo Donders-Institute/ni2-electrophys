@@ -70,7 +70,7 @@ To compute the L2-norm, we take the square root of the sum of squares of each el
     
 > Verify that this is indeed yet another solution for the example in the previous section. To which value of a does this correspond?
 
-The source power (L2 norm) can be computed in a variety of ways in Matlab:
+The source power (L2 norm) can be computed in a variety of ways in MATLAB:
 
     snorm1 = sqrt(s(1)^2+s(2)^2+s(3)^2)
     snorm2 = sqrt(sum(s.^2))

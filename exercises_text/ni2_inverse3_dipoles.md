@@ -44,7 +44,7 @@ In MATLAB this can be done in the following way. We assume a dipole at an arbitr
 
     leadfield = ni2_leadfield(sens, headmodel, [5 5 4]);
 
-Next, we are going to estimate the remainder of the parameters, i.e. the 3 dipole moment parameters, using linear estimation/least-squares regression. In MATLAB this can be easily done using the `\` or backslash operator.
+Next, we are going to estimate the remainder of the parameters, i.e., the 3 dipole moment parameters, using linear estimation/least-squares regression. In MATLAB this can be easily done using the `\` or backslash operator.
 
     dipmom = leadfield\topo_observed;
 
@@ -58,13 +58,13 @@ Now we can quantify the difference between the observed and modelled data, by su
 
     sumsq = sum((topo_observed-topo_modelled).^2)./sum(topo_observed.^2);
 
-The value we have obtained for sumsq does not mean much, unless it is compared to the sumsq obtained for a fitted model with different parameters (i.e. a dipole at another location and or with different orientation).
+The value we have obtained for sumsq does not mean much, unless it is compared to the sumsq obtained for a fitted model with different parameters (i.e., a dipole at another location and or with different orientation).
 
 > Model a dipole at location [-5 5 4], estimate the dipole moment given the observed data, and compute the relative sum of squared differences. Compare this to the value obtained above. Is the model fit better or worse?
 
 # 3 Finding the optimal model
 
-Now we know how to model the observed data using the leadfields created for one or more dipoles with a prespecified location, and we know how to quantify the goodness-of-fit between the modelled and observed data. Next, we need to consider the strategies that can be used to find the optimal model. Since the leadfields are non-linear functions of the parameters, there is no easy analytic solution to this problem. Therefore, the implicit strategy is to sample the parameter space, and to quantify for each setting of the parameters the goodness-of-fit. The parameter settings yielding the best model fit are selected. Typically, it does not make sense to just start placing dipoles at random locations and to hope that you will find the model with the best overall fit (out of all possible models. Particularly, when more than one dipole is assumed, the number of potential combinations of locations quickly explodes, and becomes unmanageable. However, in the single dipole case this seems to be a reasonable strategy. Under the assumption that the error landscape (i.e. 1 – goodness-of-fit expressed as a function of dipole location) is relatively smooth, one can sample the total set of possible source locations on a 3-dimensional grid of equally spaced dipole locations, and select the location that yields the smallest error. From this location, one could start a non-linear search to find a final solution.
+Now we know how to model the observed data using the leadfields created for one or more dipoles with a prespecified location, and we know how to quantify the goodness-of-fit between the modelled and observed data. Next, we need to consider the strategies that can be used to find the optimal model. Since the leadfields are non-linear functions of the parameters, there is no easy analytic solution to this problem. Therefore, the implicit strategy is to sample the parameter space, and to quantify for each setting of the parameters the goodness-of-fit. The parameter settings yielding the best model fit are selected. Typically, it does not make sense to just start placing dipoles at random locations and to hope that you will find the model with the best overall fit (out of all possible models. Particularly, when more than one dipole is assumed, the number of potential combinations of locations quickly explodes, and becomes unmanageable. However, in the single dipole case this seems to be a reasonable strategy. Under the assumption that the error landscape (i.e., 1 – goodness-of-fit expressed as a function of dipole location) is relatively smooth, one can sample the total set of possible source locations on a 3-dimensional grid of equally spaced dipole locations, and select the location that yields the smallest error. From this location, one could start a non-linear search to find a final solution.
 After these exercises
 
 -   You will understand the concept of the error function
@@ -74,7 +74,7 @@ To create an error function, one simply needs to repeat multiple times the model
 
     sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', 1);
 
-As a little aside, this creates a variable in MATLAB that is a so-called structure, which is a special type of variable that is convenient when working with data objects that have multiple attributes, i.e. features that belong together. These features are stored in so-called fields, which contain the actual data. In this example, if you type `sourcemodel` on the command line, you will see:
+As a little aside, this creates a variable in MATLAB that is a so-called structure, which is a special type of variable that is convenient when working with data objects that have multiple attributes, i.e., features that belong together. These features are stored in so-called fields, which contain the actual data. In this example, if you type `sourcemodel` on the command line, you will see:
 
     sourcemodel =
             pos: [3610x3 double]
@@ -90,7 +90,7 @@ For illustration purposes we will first look at a subset of all positions in thi
     sel = find(pos(:, 3)==6);
     pos = pos(sel,:);
 
-Now, what we can do is repeat the steps in the previous section for each of these points, i.e. we will model for each of the positions a dipole that optimally explains the observed topography and compute a measure of goodness-of-fit. We store these goodness-of-fit measures in a vector, so that we later can determine which position gave the best fit. Doing the same time multiple times can be easily solved with a for-loop.
+Now, what we can do is repeat the steps in the previous section for each of these points, i.e., we will model for each of the positions a dipole that optimally explains the observed topography and compute a measure of goodness-of-fit. We store these goodness-of-fit measures in a vector, so that we later can determine which position gave the best fit. Doing the same time multiple times can be easily solved with a for-loop.
 
 > If you don’t know already about the concept of a for-loop, read a bit about this in the MATLAB-documentation (type ‘help for’ or ‘doc for’ for this purpose).
 
@@ -109,7 +109,7 @@ Now we have a variable sumsq that is a vector, rather than a single number. We c
 
 > Do this.
 
-We can now look for the position that yields the lowest sum of squared difference values, i.e. the one with the best model fit. We could achieve this by zooming in into the figure and writing down the x-coordinate where the sumsq-variable seems to have the lowest value, but we can also use MATLAB’s min function:
+We can now look for the position that yields the lowest sum of squared difference values, i.e., the one with the best model fit. We could achieve this by zooming in into the figure and writing down the x-coordinate where the sumsq-variable seems to have the lowest value, but we can also use MATLAB’s min function:
 
     [m, ix] = min(sumsq);
     pos(ix,:)
@@ -216,7 +216,7 @@ The output variable to `ft_dipolefitting` has a field `dip` containing informati
 
 # 6 It’s all about the assumptions
 
-One important issue in dipole modeling is that the prior assumptions critically constrain the final model (and thus the model fit). If these assumptions don’t coincide with what’s actually in the data, this can lead to erroneous interpretations. This can work in two directions, either the model is too simplistic (i.e. you assume too few dipoles), or too complicated (you assume too many dipoles).
+One important issue in dipole modeling is that the prior assumptions critically constrain the final model (and thus the model fit). If these assumptions don’t coincide with what’s actually in the data, this can lead to erroneous interpretations. This can work in two directions, either the model is too simplistic (i.e., you assume too few dipoles), or too complicated (you assume too many dipoles).
 
 After these exercises:
 
@@ -277,6 +277,6 @@ We can also fit a model with two dipoles, this can be easily achieved by changin
 
 > Do this and evaluate the result.
 
-As you may have noticed, the result is not particularly accurate. The reason for this is that the optimization algorithm got trapped in a local minimum of the error function. This is more likely to happen, the more complicated the underlying model (i.e. more free parameters lead to a high-dimensional error function with a complicated structure and potentially many local minima). We can however inform the fitting algorithm with dipole positions from which to start the non-linear search. If these starting positions are sufficiently close to the actual source positions, the algorithm will converge to the correct solution.
+As you may have noticed, the result is not particularly accurate. The reason for this is that the optimization algorithm got trapped in a local minimum of the error function. This is more likely to happen, the more complicated the underlying model (i.e., more free parameters lead to a high-dimensional error function with a complicated structure and potentially many local minima). We can however inform the fitting algorithm with dipole positions from which to start the non-linear search. If these starting positions are sufficiently close to the actual source positions, the algorithm will converge to the correct solution.
 
 > Specify `cfg.dip.pos = [4 0 6;-4 0 6]` and verify that the result is now much better.

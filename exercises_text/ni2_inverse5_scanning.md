@@ -12,7 +12,7 @@ The **second strategy** we discussed was distributed source modeling, where mini
 
 The **third strategy** that will be treated here is a so-called scanning method (we will specifically be dealing with beamforming), where the amplitude at a predefined set of source locations is estimated iteratively, that is, for one source location at a time. This difference with distributed source modeling has some important consequences, which we will return to later in these exercises. The key feature of beamforming is that no prior assumption about the number of sources is made. Rather, for each location that we choose to evaluate, we ask ourselves the question: 'What would the the best estimate of the dipole moment at this location?’ It turns out, that if we assume the underlying sources to be uncorrelated over time we can get quite good estimates of our sources’ activation time courses using beamforming.
 
-The 'best estimate’ in the previous question is more specifically operationalised as the estimate that best captures the activity that can originate from that location while optimally suppressing interference from sources at other locations. When we use so-called adaptive beamformers for this, we need not only the biophysically constraining forward model (i.e. the leadfield matrix), we also need the sensor-level data, or more specifically the sensor-level covariance matrix. Before we will start playing with the beamformer and get a feel for how and why it works, the next section will deal with the concept of the sensor-level covariance matrix.
+The 'best estimate’ in the previous question is more specifically operationalised as the estimate that best captures the activity that can originate from that location while optimally suppressing interference from sources at other locations. When we use so-called adaptive beamformers for this, we need not only the biophysically constraining forward model (i.e., the leadfield matrix), we also need the sensor-level data, or more specifically the sensor-level covariance matrix. Before we will start playing with the beamformer and get a feel for how and why it works, the next section will deal with the concept of the sensor-level covariance matrix.
 
 ## 1.2 Getting started: setting up the MATLAB environment
 
@@ -221,7 +221,7 @@ Now we also compute the inverse of the covariance matrix, because it will be use
 
 > We can now compute the source time courses reconstructed with the beamformer.  Do this and call the result `sbf`.
 
-We can now inspect what the shape of the reconstructed source time course is at the locations at which activity was simulated. Note that if we don’t constrain the orientation of the sources (i.e. use a 3-column leadfield per location) we will get a 3-row spatial filter per location. In order to go from the original position-based indices of the grid points, we need to do the following:
+We can now inspect what the shape of the reconstructed source time course is at the locations at which activity was simulated. Note that if we don’t constrain the orientation of the sources (i.e., use a 3-column leadfield per location) we will get a 3-row spatial filter per location. In order to go from the original position-based indices of the grid points, we need to do the following:
 
     sel = find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
     sel = repmat((sel-1)*3, 1, 3)+repmat(1:3, numel(sel), 1);
@@ -262,7 +262,7 @@ After this section, you will
 
 ## 4.1 Beamforming and depth bias
 
-In the previous section we visualized the reconstructed time courses at the locations close to where we actually simulated the activity. In real applications, these locations of course are unknown, and we typically need to look for local maxima in the reconstructed 'image’. The quantity that is used is the filter output, i.e. the variance of the source time courses, which is also often referred to as the 'power’ of the sources. Apart from the fact that in real applications the data are usually quite noisy, causing difficulties in the estimation of the local maxima, there is an important feature of the beamformer, which further complicates the evaluation of peaks in the image. This is the so-called depth bias.
+In the previous section we visualized the reconstructed time courses at the locations close to where we actually simulated the activity. In real applications, these locations of course are unknown, and we typically need to look for local maxima in the reconstructed 'image’. The quantity that is used is the filter output, i.e., the variance of the source time courses, which is also often referred to as the 'power’ of the sources. Apart from the fact that in real applications the data are usually quite noisy, causing difficulties in the estimation of the local maxima, there is an important feature of the beamformer, which further complicates the evaluation of peaks in the image. This is the so-called depth bias.
 
 To illustrate this depth bias, we first restructure the source-reconstructed simulated data of section 3.2 in a data-structure that can be used by FieldTrip, so that we can use FieldTrip's visualization functionality. If you don’t have the `sbf` and `sourcemodel` variables in MATLAB memory anymore, you need to reconstruct these in order to be able to proceed.
 
@@ -310,7 +310,7 @@ Now we will simulate data from a 'second’ condition (compared to the original 
                   1.25 .* leadfield4*s4 + ...
                   randn(301, 1000)*0.04e-8;
 
-We will now compute the spatial filters using the covariance estimated from the data combined across the two conditions. In this way we will end up with a single set of spatial filters, and thus, in comparing across the two conditions, we ensure that the depth bias is the same for condition 1 and 2. The covariance of the data combined across the 2 conditions can be computed in several ways, e.g. by averaging the single condition covariances. Here, we first concatenate the data and subsequently compute the covariance. Now we will use the MATLAB `cov` function, rather than computing the covariance 'by hand’ (i.e. by first computing the mean across time etc.).
+We will now compute the spatial filters using the covariance estimated from the data combined across the two conditions. In this way we will end up with a single set of spatial filters, and thus, in comparing across the two conditions, we ensure that the depth bias is the same for condition 1 and 2. The covariance of the data combined across the 2 conditions can be computed in several ways, e.g. by averaging the single condition covariances. Here, we first concatenate the data and subsequently compute the covariance. Now we will use the MATLAB `cov` function, rather than computing the covariance 'by hand’ (i.e., by first computing the mean across time etc.).
 
     C2 = cov([sensordata sensordata2]');
     iCr2 = inv(C2+eye(301)*1e-19);

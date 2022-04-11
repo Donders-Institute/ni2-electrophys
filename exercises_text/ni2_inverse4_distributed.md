@@ -88,10 +88,10 @@ Filling in the parametrization we obtained in section 2.1, we get:
 
 Rearranging the terms, we get:
 
-    snorm = sqrt((4-4a+a^2)+(1-2a+a^2)+a^2);
-    snorm = sqrt(3a^2-6a+5);
+    snorm = sqrt((4-4*a+a^2)+(1-2*a+a^2)+a^2);
+    snorm = sqrt(3*a^2-6*a+5);
 
-If we forget about the the square root, we need to minimize (3a^2-6a+5) which can be done in a variety of ways, e.g. using the [ABC-formula](https://en.wikipedia.org/wiki/Quadratic_formula) to find the minimum of a parabolic equation, or take the derivative of this equation, and find the value for `a`, where the derivative is 0.
+If we forget about the the square root, we need to minimize `(3*a^2-6*a+5)` which can be done in a variety of ways, e.g. using the [ABC-formula](https://en.wikipedia.org/wiki/Quadratic_formula) to find the minimum of a parabolic equation, or by taking the derivative of this equation and finding the value for `a`, where the derivative is 0.
 
 ## 2.3 Inverting leadfield matrices
 
@@ -107,7 +107,7 @@ If we want to solve this (very simple system of linear equations) for s (the sou
 
 Instead of dividing each side of the equation by 3, we can also say that we are multiplying each side of the equation by 1/3. 1/3 is also known as the 'inverse’ of 3, which can also be written as 3^-1. When we are dealing with matrices, the same logic applies:
 
-    Y        =      L * S
+           Y =      L * S
     L^-1 * Y = L^-1 L * S 	
     L^-1 * Y =          S
 
@@ -115,7 +115,7 @@ Here `L^-1*L = I`, where the matrix `I` is the identity matrix, all zeros off th
 
 > Again, these are not valid lines of MATLAB code. Just follow the computations in your head.
  
-The above equation however only works in a very limited number of cases. The reason is that a matrix inverse is only defined for square matrices (i.e. in our case we would need an equal number of channels and sources), where moreover the leadfield matrix must fulfill the mathematical property that it is actually invertible.
+The above equation however only works in a very limited number of cases. The reason is that a matrix inverse is only defined for square matrices (i.e., in our case we would need an equal number of channels and sources), where moreover the leadfield matrix must fulfill the mathematical property that it is actually invertible.
 
 We can use the so-called pseudo-inverse of a matrix to get a solution to the linear system of equations. The term 'pseudo’ refers to the fact that the matrix you get after taking the pseudo-inverse behaves a bit like an inverse matrix, but not exactly.
 
@@ -123,15 +123,15 @@ The pseudo-inverse in this case can be computed in math formulation as:
 
     Lpinv = L' * (L*L')^-1
 
-The MATLAB `pinv` function achieves the same:
+The MATLAB [pinv](https://www.mathworks.com/help/matlab/ref/pinv.html) function achieves the same:
 
     Lpinv = pinv(L)
     
 > Using the leadfield L created in section 2.1, verify that these two methods give the same answer for Lpinv.
 >
-> Also try to invert L with the regular ‘inv’ command. What do you get?
+> Also try to invert L with the regular [inv](https://www.mathworks.com/help/matlab/ref/inv.html) command. What do you get?
 >
-> Investigate the outcome of Lpinv\*L and L\*Lpinv.
+> Investigate the outcome of `Lpinv*L` and `L*Lpinv`.
 
 In contrast to a proper inverse matrix, where both `A*A^-1 = I` and `A^-1*A = I`, the pseudoinverse exists in only one direction. This can be easily seen when inspecting `Lpinv*L` and `L*Lpinv`. The first one does not result in an identity matrix. The second equation results in an identity, because it is equivalent to `(L*L')^-1 * (L*L')`. The matrix products between the brackets are the same, both form a square matrices and they happen to be in general invertible, thus the product between the inverse of that product with itself will yield `I`.
 
@@ -139,11 +139,11 @@ In contrast to a proper inverse matrix, where both `A*A^-1 = I` and `A^-1*A = I`
 
 The pseudo-inverse is not only a clever mathematical way of computing a new matrix that, when multiplied with the original in the correct order, gives back the identity matrix. It happens to be a solution to the undertermined linear system of equations that yields the minimum norm.
 
-This can be proved as follows (note that we start assuming that we have the solution that yields the minimum norm):
+The proof for this can be derived by starting with a particilar solution; subsequenbtly we show that there is no other solution which has a norm that is smaller than that one.
 
 We know that there are many possible solutions for the equation `y = L*s`. Let us use a capital `S` from now on to facilitate formatting; we will use `Sx` to indicate s<sub>x</sub> as `s` with the subscript `x`. If we just take two possible solutions, `Smn` and `Sx`, where `Smn` happens to be `L'*(L*L')^-1 * y` and `Sx` being a random other solution, we know that both `L*Smn` and `L*Sx` yield `y`. Thus, `L*Smn = L*Sx`, or equivalently `L*(Smn-Sx) = 0`.
 
-Remember from section 2.2 that the norm of the solution can be computed from `s'*s`. This latter equation computes for each of the sources the square of the amplitude, and sums across sources (to get the norm, we have to take the square root of the result, but let’s not do this for now, and look at the squared norm). Likewise, we can do `(Sx-Smn)'*Smn`, where we compute for each of the sources the product between the amplitude modelled in Smn and the amplitude difference between s and Smn, and sum this across sources. Substituting `L'*(L*L')^-1 * y` for the second `Smn` in the equation, we get:
+Remember from section 2.2 that the norm of the solution can be computed from `s'*s`. This latter equation computes for each of the sources the square of the amplitude, and sums across sources. To actually get the norm, we would also have to take the square root of the result, but let’s not do this for now, and look at the squared norm. Likewise, we can do `(Sx-Smn)'*Smn`, where we compute for each of the sources the product between the amplitude modelled in `Smn` and the amplitude difference between `s` and `Smn`, and sum this across sources. Substituting `L'*(L*L')^-1 * y` for the second `Smn` in the equation, we get:
 
       (Sx-Smn)' * Smn                  =
       (Sx-Smn)' * L'   * (L*L')^-1 * y =
@@ -173,7 +173,7 @@ or
     
 The last equation tells us that the squared norm of `Sx` is always the sum of the squared norm of `Smn` and the squared norm of the difference between `Sx` and `Smn`.
 
-Since squared numbers are always positive (or 0), we can conclude that the norm of `Sx` is always larger or equal to the norm of `Smn`. Thus, `Smn` represents the solution with the minimum norm.
+Since squared numbers are always positive (or 0), we can conclude that the norm of `Sx` is always larger (or equal) to the norm of `Smn`. Hence, `Smn` must represent the solution with the minimum norm.
 
 # 3 The real deal
 
@@ -199,7 +199,7 @@ We start by simulating some MEG data that contains two active sources.
 
 Try and understand the steps above. Pay particular attention to the parameters of the simulated dipoles.
 
-We now proceed to generate a MATLAB data-structure that FieldTrip understands. This data-structure is a collection of MATLAB-variables, organized in so-called fields, that belong together. An important aspect of these FieldTrip data structures is that the numeric data that is represented (in our case in the 'avg’ field) is accompanied by all information necessary to interpret this numeric data. For example, there is a field called 'time’, that indicates each time sample in seconds (i.e. it maps the columns of the 'avg’ field on a physical time axis). The 'label’ field specifies the name of each channel (and tells us which row in the 'avg’ field belongs to which channel).
+We now proceed to generate a MATLAB data-structure that FieldTrip understands. This data-structure is a collection of MATLAB-variables, organized in so-called fields, that belong together. An important aspect of these FieldTrip data structures is that the numeric data that is represented (in our case in the 'avg’ field) is accompanied by all information necessary to interpret this numeric data. For example, there is a field called 'time’, that indicates each time sample in seconds (i.e., it maps the columns of the 'avg’ field on a physical time axis). The 'label’ field specifies the name of each channel (and tells us which row in the 'avg’ field belongs to which channel).
 
     data        = [];
     data.avg    = sensordata;
@@ -209,7 +209,7 @@ We now proceed to generate a MATLAB data-structure that FieldTrip understands. T
     data.cov    = eye(numel(sens.label));
     data.dimord = 'chan_time';
 
-Next we will make a source reconstruction using the 'mne’ method of FieldTrip’s ft_sourceanalysis function. Before we can do this, we need to define our source model, i.e. the set of locations that we assume to be active. For now we assume that the active dipoles are distributed on a 3D regular grid, with a spacing of 1 cm between the dipoles:
+Next we will make a source reconstruction using the 'mne’ method of FieldTrip’s ft_sourceanalysis function. Before we can do this, we need to define our source model, i.e., the set of locations that we assume to be active. For now we assume that the active dipoles are distributed on a 3D regular grid, with a spacing of 1 cm between the dipoles:
 
     sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', 1);
 

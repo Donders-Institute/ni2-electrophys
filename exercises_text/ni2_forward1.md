@@ -150,7 +150,7 @@ will yield the same result as:
 
 For this reason, it is custom (and convenient) that leadfields are defined as the spatial topography of the electric potential (EEG) or magnetic field (MEG) due to a unit-amplitude source at a given location and orientation.
 
-In the example above the amplitude information (the value '2') just represented the activity of a source in a single time point. The amplitude term can be very easily extended to contain multiple time points, i.e. to become a vector. Mathematically, this can still be expressed as a matrix multiplication:
+In the example above the amplitude information (the value '2') just represented the activity of a source in a single time point. The amplitude term can be very easily extended to contain multiple time points, i.e., to become a vector. Mathematically, this can still be expressed as a matrix multiplication:
 
     leadfield x amplitude time course
 

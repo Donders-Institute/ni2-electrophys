@@ -107,7 +107,7 @@ Up until now we have explored the covariance between two variables represented a
 
 Let’s go back now to our basic observation model: `X = L*S+n`. If we now change this equation to include the individual contributions of the single sources, and forget about the noise we get:
 
-    X = l1*s1 + l2*s2 + … + ln*sn;
+    X = l1*s1 + l2*s2 + … + ln*sn
 
 When we compute `X*X'` and observe the individual terms in `X` we are essentially doing the following:
 
@@ -118,14 +118,14 @@ There is a basic rule in matrix algebra that states that `(A*B)'` is the same as
     C = l1*s1*s1'*l1' + l2*s2*s1'*l1' + … + ln*sn*s1'*l1' + …
         l1*s1*s2'*l2' + l2*s2*s2'*l2' + … + ln*sn*s2'*l2' + …
         …
-        l1*s1*sn'*ln' + l2*s2*sn'*ln' + … + ln*sn*sn'*ln';
+        l1*s1*sn'*ln' + l2*s2*sn'*ln' + … + ln*sn*sn'*ln'
 
 Now the above equation looks complicated, but if we realize that `si*sj'` represents the covariance (or auto-covariance) between the sources `i` and `j`, and that these are scalar values (which means that it does not matter in which order you multiply this in a matrix multiplication), we can rewrite the above equation as:
 
-    C =     var(s1)*l1*l1' + cov(s2, s1)*l2*l1' + … + cov(sn, s1)*ln*l1' + …
-        cov(s1, s2)*l1*l2' +     var(s2)*l2*l2' + … + cov(sn, s2)*ln*l2' + …
-        …  
-        cov(s1, sn)*l1*ln' + cov(s2, sn)*l2*ln' + … +     var(sn)*ln*ln';
+    C =  var(s1)    *l1*l1' + cov(s2, s1)*l2*l1' + … + cov(sn, s1)*ln*l1' + …
+         cov(s1, s2)*l1*l2' + var(s2)    *l2*l2' + … + cov(sn, s2)*ln*l2' + …
+         …  
+         cov(s1, sn)*l1*ln' + cov(s2, sn)*l2*ln' + … + var(sn)    *ln*ln'
 
 The terms `li*lj'` are also called vector outer-products, so in words the above equation means that the covariance matrix can be represented as a _weighted sum_ of the leadfield outer products between all _pairs of sources_, where the weights are based on the covariance between the corresponding pairs of sources.
 
@@ -176,18 +176,18 @@ The filter output is defined as: `w'*X`
 
 Let us now create some simulated data to demonstrate the beamformer.
 
-    sens = ni2_sensors('type', 'meg');
+    sens      = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
 
-    leadfield1 = ni2_leadfield(sens,headmodel,[-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
-    leadfield2 = ni2_leadfield(sens,headmodel,[-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
-    leadfield3 = ni2_leadfield(sens,headmodel,[4.9 0 6.2 0 1 0]);     % position 2352 in the grid
-    leadfield4 = ni2_leadfield(sens,headmodel,[4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
+    leadfield1 = ni2_leadfield(sens, headmodel, [-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
+    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
+    leadfield3 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);     % position 2352 in the grid
+    leadfield4 = ni2_leadfield(sens, headmodel, [4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
 
-    [s1, t1] = ni2_activation('latency', .45, 'frequency',  3);
-    [s2, t2] = ni2_activation('latency', .50, 'frequency', 10);
-    [s3, t3] = ni2_activation('latency', .50, 'frequency', 15);
-    [s4, t4] = ni2_activation('latency', .55, 'frequency', 30);
+    [s1, t] = ni2_activation('latency', .45, 'frequency',  3);
+    [s2, t] = ni2_activation('latency', .50, 'frequency', 10);
+    [s3, t] = ni2_activation('latency', .50, 'frequency', 15);
+    [s4, t] = ni2_activation('latency', .55, 'frequency', 30);
 
     sensordata = leadfield1*s1 + leadfield2*s2 + leadfield3*s3 + leadfield4*s4 + randn(301, 1000)*0.04e-8;
 
@@ -221,28 +221,35 @@ Now we also compute the inverse of the covariance matrix, because it will be use
 
 > We can now compute the source time courses reconstructed with the beamformer.  Do this and call the result `sbf`.
 
-We can now inspect what the shape of the reconstructed source time course is at the locations at which activity was simulated. Note that if we don’t constrain the orientation of the sources (i.e., use a 3-column leadfield per location) we will get a 3-row spatial filter per location. In order to go from the original position-based indices of the grid points, we need to do the following:
+We can now inspect what the shape of the reconstructed source time course is at the locations at which activity was simulated. Note that if we don’t constrain the orientation of the sources (i.e., use a 3-column leadfield per location) we will get a 3-row spatial filter per location. In order to go from the original 3D grid indices that cover a regular gfrid inside _and_ outside the head, we need to do the following:
 
-    sel = find(ismember(find(sourcemodel.inside), [1110 2342 2352 2674]));
-    sel = repmat((sel-1)*3, 1, 3)+repmat(1:3, numel(sel), 1);
+    index = 1:numel(sourcemodel.inside);               % these are all source positions, including the ones outside the brain
+    index1110 = find(index(sourcemodel.inside)==1110)  % find the index of source position 1110, only considering the ones inside the brain
+    index2342 = find(index(sourcemodel.inside)==2342)
+    index2352 = find(index(sourcemodel.inside)==2352)
+    index2674 = find(index(sourcemodel.inside)==2674)
+    sel1110 = (index1110-1)*3 + (1:3)                  % find the three columns corresponding to source position 1110
+    sel2342 = (index2342-1)*3 + (1:3)
+    sel2352 = (index2352-1)*3 + (1:3)
+    sel2674 = (index2674-1)*3 + (1:3)
 
-Each row in the matrix `sel` is a triplet of consecutive numbers that points to rows in the matrix of `wbf` (and `sbf`) that we are going to explore first.
+Each vector `selXXX` is a triplet of consecutive numbers that points to rows in the matrix of `wbf` (and `sbf`) that we are going to explore first.
 
-    figure;
-    subplot(1, 2, 1); plot(t1, sbf(sel(1,:),:));
-    subplot(1, 2, 2); plot(t1, s4);
+    figure
+    subplot(1, 2, 1); plot(t, sbf(sel1110,:));
+    subplot(1, 2, 2); plot(t, s1);
 
-    figure;
-    subplot(1, 2, 1); plot(t1, sbf(sel(2,:),:));
-    subplot(1, 2, 2); plot(t1, s2);
+    figure
+    subplot(1, 2, 1); plot(t, sbf(sel2342,:));
+    subplot(1, 2, 2); plot(t, s2);
 
-    figure;
-    subplot(1, 2, 1); plot(t1, sbf(sel(3,:),:));
-    subplot(1, 2, 2); plot(t1, s1);
+    figure
+    subplot(1, 2, 1); plot(t, sbf(sel2352,:));
+    subplot(1, 2, 2); plot(t, s3);
 
-    figure;
-    subplot(1, 2, 1); plot(t1, sbf(sel(4,:),:));
-    subplot(1, 2, 2); plot(t1, s3);
+    figure
+    subplot(1, 2, 1); plot(t, sbf(sel2674,:));
+    subplot(1, 2, 2); plot(t, s4);
 
 As you may have noticed, the resulting time courses are a bit noisy. This is due to the noise in the data being projected onto the estimated source time courses. This can be accounted for by a mathematical trick that is called regularization. This boils down to adding a scaled identity matrix to the sensor covariance matrix prior to calculating the inverse. This makes the mathematical inversion of the covariance matrix less sensitive to. The regularized inverse of the covariance matrix can be computed as:
 
@@ -269,20 +276,24 @@ To illustrate this depth bias, we first restructure the source-reconstructed sim
 In order to represent the reconstruction as an image, we need to express the variance of the sources at each of the locations in a single number. Recall that at each location of the 3-dimensional grid the source activity consists of three time courses, one for each 'cardinal’ x/y/z orientation. A common way to achieve this is to sum the variance across the three orientations. This is essentially the application of Pythagoras’ rule (without explicitly taking the square and the square root, since variance is already a 'squared’ value). With our sbf variable it is possible to do this in the following way. Note that this variable is a 'number of inside sources x 3’ times 'number of timepoints’ matrix. If we compute the variance across time (`var(sbf, [], 2)`) we end up with a vector, that in consecutive triplets contains the variance in the x/y/z orientation at the 'inside’ dipole locations of the sourcemodel. We can now efficiently create the variance for each location by using MATLAB’s reshape and sum functions:
 
     pbf = var(sbf, [], 2);
-    pbf = sum(reshape(pbf, 3, numel(pbf)/3));
+    pbf = reshape(pbf, 3, numel(pbf)/3);
+    pbf = sum(pbf, 1);
 
-Take a moment to try and understand what is going on in the second line.
+Take a moment to try and understand what is going on in the second and third line.
 
 Now, create a FieldTrip type 'source’-structure, and use ft_sourceplot to visualize this.
 
+    source = [];
     source.pos = sourcemodel.pos;
     source.dim = sourcemodel.dim;
     source.inside = sourcemodel.inside;
-    source.avg.pow = zeros(size(source.pos, 1), 1);
-    source.avg.pow(source.inside)=pbf;
+    source.inside = reshape(source.inside, source.dim);
+    source.pow = zeros(size(source.pos, 1), 1);
+    source.pow(source.inside) = pbf;
+    source.pow = reshape(source.pow, source.dim);
 
     cfg = [];
-    cfg.funparameter = 'avg.pow';
+    cfg.funparameter = 'pow';
     cfg.method = 'slice';
     cfg.nslices = 10;
     cfg.funcolorlim = [0 0.2];
@@ -302,7 +313,7 @@ In the previous section we have seen that the depth bias is related to the fact 
 
 We will use the variables `sensordata`, `sourcemodel` and `L` that we also used in section 3. We also need the leadfields and source timecourses that we used for the simulations. If you don’t have these variables anymore in MATLAB memory, you should re-create them.
 
-Now we will simulate data from a 'second’ condition (compared to the original variable sensordata), where the sources have the exact same locations and time courses, but the amplitude of two sources is decreased, and the amplitude of the other sources is increased, relative to the 'first’ condition.
+Now we will simulate data from a 'second’ condition (compared to the original variable sensordata), where the sources have the exact same locations and time courses, but the amplitude of two sources is decreased, and the amplitude of the two other sources is increased, relative to the 'first’ condition.
 
     sensordata2 = 1.25 .* leadfield1*s1 + ...
                   0.80 .* leadfield2*s2 + ...
@@ -317,14 +328,16 @@ We will now compute the spatial filters using the covariance estimated from the 
 
 > Use the `iCr2` variable to compute the spatial filters in the same way as in section 3.2. Call this variable `wbfr2`. Then, compute the source time courses for the conditions separately (hint: use `wbfr2*sensordata` and `wbfr2*sensordata2`), and compute the condition specific power estimate (as in section 4.1). Calle these estimates `pbfr1` and `pbfr2`.
 
-We can now create a FieldTrip style source-structure, and store in the field `avg.pow` a measure of the difference between condition 1 and 2.
+We can now create a FieldTrip style source-structure, and store in the field `pow` a measure of the difference between condition 1 and 2.
 
     source = [];
     source.pos = sourcemodel.pos;
     source.dim = sourcemodel.dim;
     source.inside = sourcemodel.inside;
-    source.avg.pow = zeros(size(source.pos, 1), 1);
-    source.avg.pow(source.inside) = (pbfr1-pbfr2)./(pbfr1+pbfr2);
+    source.inside = reshape(source.inside, source.dim);
+    source.pow = zeros(size(source.pos, 1), 1);
+    source.pow(source.inside) = (pbfr1-pbfr2)./(pbfr1+pbfr2);
+    source.pow = reshape(source.pow, source.dim);
 
     cfg = [];
     cfg.funparameter = 'avg.pow';
@@ -347,8 +360,8 @@ First, we create some sensor data:
     leadfield2 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);  % position 2352 in grid
 
     % create the time course of activation
-    [s1, t1] = ni2_activation('latency', .5, 'frequency', 10);
-    [s2, t2] = ni2_activation('latency', .4, 'frequency', 10);
+    [s1, t] = ni2_activation('latency', .5, 'frequency', 10);
+    [s2, t] = ni2_activation('latency', .4, 'frequency', 10);
 
     % create the sensor data
     sensordata = leadfield1*s1 + ...

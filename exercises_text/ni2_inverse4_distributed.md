@@ -191,10 +191,10 @@ We start by simulating some MEG data that contains two active sources.
 
     [data1, time1] = ni2_activation;
     [data2, time2] = ni2_activation('frequency', 11, 'latency', 0.48);
-    sens = ni2_sensors('type', 'meg');
+    sensors = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
+    leadfield1 = ni2_leadfield(sensors, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
+    leadfield2 = ni2_leadfield(sensors, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
     sensordata = leadfield1*data1 + leadfield2*data2;
 
 Try and understand the steps above. Pay particular attention to the parameters of the simulated dipoles.
@@ -204,9 +204,9 @@ We now proceed to generate a MATLAB data-structure that FieldTrip understands. T
     data        = [];
     data.avg    = sensordata;
     data.time   = time1;
-    data.label  = sens.label;
-    data.grad   = sens;
-    data.cov    = eye(numel(sens.label));
+    data.label  = sensors.label;
+    data.grad   = sensors;
+    data.cov    = eye(numel(sensors.label));
     data.dimord = 'chan_time';
 
 Next we will make a source reconstruction using the 'mne’ method of FieldTrip’s ft_sourceanalysis function. Before we can do this, we need to define our source model, i.e., the set of locations that we assume to be active. For now we assume that the active dipoles are distributed on a 3D regular grid, with a spacing of 1 cm between the dipoles:
@@ -247,10 +247,10 @@ Let’s now simulate MEG sensor data with added noise:
 
     [data1, time1] = ni2_activation;
     [data2, time2] = ni2_activation('frequency', 11, 'latency', 0.48);
-    sens = ni2_sensors('type', 'meg');
+    sensors = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
+    leadfield1 = ni2_leadfield(sensors, headmodel, [ 4.9 0 6.2 0 1 0]); % close to position 2352 in grid
+    leadfield2 = ni2_leadfield(sensors, headmodel, [-5.3 0 5.9 1 0 0]); % close to position 2342 in grid
     sensordata = leadfield1*data1 + leadfield2*data2 + randn(301, 1000)*.7e-10;
 
 Create a FieldTrip data structure:
@@ -258,8 +258,8 @@ Create a FieldTrip data structure:
     data        = [];
     data.avg    = sensordata;
     data.time   = time1;
-    data.label  = sens.label;
-    data.grad   = sens;
+    data.label  = sensors.label;
+    data.grad   = sensors;
     data.cov    = cov(randn(301, 1000)'*.7e-10);
     data.dimord = 'chan_time';
 

@@ -176,13 +176,13 @@ The filter output is defined as: `w'*X`
 
 Let us now create some simulated data to demonstrate the beamformer.
 
-    sens      = ni2_sensors('type', 'meg');
+    sensors      = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
 
-    leadfield1 = ni2_leadfield(sens, headmodel, [-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
-    leadfield3 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);     % position 2352 in the grid
-    leadfield4 = ni2_leadfield(sens, headmodel, [4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
+    leadfield1 = ni2_leadfield(sensors, headmodel, [-2 -7.8 3 -1 0 0]);    % position 1110 in the grid
+    leadfield2 = ni2_leadfield(sensors, headmodel, [-5.3 0 5.9 1 0 0]);    % position 2342 in the grid
+    leadfield3 = ni2_leadfield(sensors, headmodel, [4.9 0 6.2 0 1 0]);     % position 2352 in the grid
+    leadfield4 = ni2_leadfield(sensors, headmodel, [4.2 -2 7 0 0.2 0.7]);  % position 2674 in the grid
 
     [s1, t] = ni2_activation('latency', .45, 'frequency',  3);
     [s2, t] = ni2_activation('latency', .50, 'frequency', 10);
@@ -197,7 +197,7 @@ We are first going to compute the beamformer spatial filters by hand, to demonst
 
     cfg = [];
     cfg.sourcemodel = sourcemodel;
-    cfg.grad = sens;
+    cfg.grad = sensors;
     cfg.headmodel = headmodel;
     sourcemodel = ft_prepare_leadfield(cfg);
 
@@ -354,10 +354,10 @@ One characteristic feature of the beamformer is its inability to deal with corre
 
 First, we create some sensor data:
 
-    sens = ni2_sensors('type', 'meg');
+    sensors = ni2_sensors('type', 'meg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 1);
-    leadfield1 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
-    leadfield2 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);  % position 2352 in grid
+    leadfield1 = ni2_leadfield(sensors, headmodel, [-5.3 0 5.9 1 0 0]); % position 2342 in grid
+    leadfield2 = ni2_leadfield(sensors, headmodel, [4.9 0 6.2 0 1 0]);  % position 2352 in grid
 
     % create the time course of activation
     [s1, t] = ni2_activation('latency', .5, 'frequency', 10);

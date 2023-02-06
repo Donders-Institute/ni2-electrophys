@@ -28,21 +28,21 @@ After doing these exercises
 We begin by generating some sensor-level data, by now this hopefully starts to look familiar:
 
     [data, time] = ni2_activation;
-    sens = ni2_sensors('type', 'eeg');
+    sensors = ni2_sensors('type', 'eeg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
-    leadfield = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);
+    leadfield = ni2_leadfield(sensors, headmodel, [4.9 0 6.2 0 1 0]);
     sensordata = leadfield * data + randn(91, 1000)*1e-3;
 
 We have added some noise to the data, in order to make it look more realistic. Now we select a single time slice from the data matrix, which will serve as our observed topography:
 
     topo_observed = sensordata(:, 500);
-    figure; ni2_topoplot(sens, topo_observed);
+    figure; ni2_topoplot(sensors, topo_observed);
 
 What is typically done in dipole fitting is that the model of the observed data is created in a two-step procedure. First, given a set of location parameters, the forward model is created, yielding an Nchannels x (Ndipoles x 3) leadfield matrix, where each triplet of columns in the leadfield matrix represents the topography of a unit-amplitude dipole at a given location, with an orientation along one of the axes of the coordinate system. In a second step, the parameters that describe the dipole(s’) moment are estimated using linear estimation. This can be seen as a linear regression problem, where the leadfield matrix is the 'design matrix’, and the observed topography is the dependent variable.
 
 In MATLAB this can be done in the following way. We assume a dipole at an arbitrary location and first model the leadfield.
 
-    leadfield = ni2_leadfield(sens, headmodel, [5 5 4]);
+    leadfield = ni2_leadfield(sensors, headmodel, [5 5 4]);
 
 Next, we are going to estimate the remainder of the parameters, i.e., the 3 dipole moment parameters, using linear estimation/least-squares regression. In MATLAB this can be easily done using the `\` or backslash operator.
 
@@ -97,7 +97,7 @@ Now, what we can do is repeat the steps in the previous section for each of thes
     sumsq = zeros(size(pos, 1), 1);
     
     for k=1:size(pos, 1)
-      leadfield = ni2_leadfield(sens, headmodel, pos(k,:));
+      leadfield = ni2_leadfield(sensors, headmodel, pos(k,:));
       dipmom = leadfield\topo_observed;
       topo_modelled = leadfield * dipmom;
       sumsq(k) = sum((topo_observed-topo_modelled).^2)./sum(topo_observed.^2);
@@ -116,7 +116,7 @@ We can now look for the position that yields the lowest sum of squared differenc
 
 Depending on the noise in the data, this position will be more or less close to the actual simulated location. One can improve on this estimate by fitting a model to more than one time point. The idea is that the influence of noise on the single time point observed topographies is attenuated when combining across time points. Assuming a fixed dipole location, this extended temporal model is quite straightforward, we will return to this later.
 
-First, for convenience, we will repeat the steps above by using a set of pre-computed leadfields, that have been computed for the full 3D-grid. Since the computation of the leadfields is relatively expensive (time-consuming) in terms of computation, it makes sense to compute them once when they will be used multiple times. Further down in this tutorial we will explore the effect of model assumptions on the outcome, and do this using the grid search, so it pays off to compute the leadfields. Although this is not a really difficult exercise (just do the following: leadfield = ni2_leadfield(sens, headmodel, pos)) the leadfields are in the ni2-folder where the matlab-code for this part of the course is located. When you type load('leadfields’) you will obtain a variable called leadfield which contain per location a 3-column leadfield matrix.
+First, for convenience, we will repeat the steps above by using a set of pre-computed leadfields, that have been computed for the full 3D-grid. Since the computation of the leadfields is relatively expensive (time-consuming) in terms of computation, it makes sense to compute them once when they will be used multiple times. Further down in this tutorial we will explore the effect of model assumptions on the outcome, and do this using the grid search, so it pays off to compute the leadfields. Although this is not a really difficult exercise (just do the following: leadfield = ni2_leadfield(sensors, headmodel, pos)) the leadfields are in the ni2-folder where the matlab-code for this part of the course is located. When you type load('leadfields’) you will obtain a variable called leadfield which contain per location a 3-column leadfield matrix.
 
 > What do these 3-columns per location mean?
 
@@ -182,7 +182,7 @@ After this section
 
 -   You understand that the non-linear search for optimal dipole parameters can yield a solution very close to the ground truth.
 
-We start again by ensuring that we have the following variables in the MATLAB-workspace: sensordata, headmodel and sens. If you don’t have these variables available, please go back to section 2 and create these variables.
+We start again by ensuring that we have the following variables in the MATLAB-workspace: sensordata, headmodel and sensors. If you don’t have these variables available, please go back to section 2 and create these variables.
 Next, we need to create some variables that are recognized by FieldTrip. Most FieldTrip functions work by providing 2 input arguments, a cfg-structure that contains parameters that determine the behaviour of the function, and one (or more) data-structures providing the data on which the function operates.
 
 Let’s first create the data variable:
@@ -190,8 +190,8 @@ Let’s first create the data variable:
     data = [];
     data.avg = sensordata;
     data.time = time;
-    data.label = sens.label;
-    data.elec = sens;
+    data.label = sensors.label;
+    data.elec = sensors;
     data.dimord = 'chan_time';
 
 And the cfg-structure:
@@ -224,14 +224,14 @@ After these exercises:
 
 First, we create some sensor-level data that contains two sources:
 
-    sens = ni2_sensors('type', 'eeg');
+    sensors = ni2_sensors('type', 'eeg');
     headmodel = ni2_headmodel('type', 'spherical', 'nshell', 3);
 
     [data1, time] = ni2_activation;
     [data2, time] = ni2_activation('frequency', 11, 'latency', 0.48);
 
-    leadfield1 = ni2_leadfield(sens, headmodel, [4.9 0 6.2 0 1 0]);
-    leadfield2 = ni2_leadfield(sens, headmodel, [-5.3 0 5.9 1 0 0]);
+    leadfield1 = ni2_leadfield(sensors, headmodel, [4.9 0 6.2 0 1 0]);
+    leadfield2 = ni2_leadfield(sensors, headmodel, [-5.3 0 5.9 1 0 0]);
 
     sensordata = leadfield1*data1 + leadfield2*data2 + randn(91, 1000)*.7e-3;
 
@@ -258,8 +258,8 @@ Now we are going to use the FieldTrip function to fit a single dipole:
     data = [];
     data.avg = sensordata;
     data.time = time;
-    data.label = sens.label;
-    data.elec = sens;
+    data.label = sensors.label;
+    data.elec = sensors;
     data.dimord = 'chan_time';
 
     cfg = [];

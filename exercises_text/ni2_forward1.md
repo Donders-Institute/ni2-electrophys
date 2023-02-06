@@ -22,64 +22,64 @@ Electrophysiological signals typically represent a mixture of the underlying neu
 -   You will know that making a weighted combination is equivalent to doing a matrix multiplication.
 -   Argue that temporal characteristics of the sources and the spatial mixing interact in a non-trivial way.
 
-We start with the generation of some 'source signals'. To this end we can use the function ni2_activation. If you type help ni2_activation on the MATLAB-command line you can read how to use the function. Let's start with
+We start with the generation of some 'source signals'. To this end we can use the function `ni2_activation`. If you type `help ni2_activation` on the MATLAB-command line you can read how to use the function. Let's start with
 
-    [data, time] = ni2_activation;
+    [sourceactivity, time] = ni2_activation;
 
-Without specifying any input arguments, the function will set all parameters to a default value. Type help ni2_activation to see the default parameter values.
+Without specifying any input arguments, the function will set all parameters to a default value. Type `help ni2_activation` to see the default parameter values.
 
-The output variables data and time contain for each sampled time point the amplitude of the signal, and the time in seconds. You can visualize the data by using MATLAB's built-in function plot. Type
+The output variables `sourceactivity` and `time` contain for each sampled time point the amplitude of the source signal, and the time in seconds. You can visualize the activity by using MATLAB's built-in function plot. Type
 
-    figure; plot(time, data);
+    figure; plot(time, sourceactivity);
 
 > Verify whether the default parameter settings in ni2_activation coincide with what is described in the function’s
 
-Now we will create an activation time course, which peaks at 0.4 seconds, and which has an oscillation frequency of 5 Hz:
+Now we will create a second time course that peaks at 0.4 seconds and which has an oscillation frequency of 5 Hz:
 
-    [data2, time2] = ni2_activation('latency', 0.4, 'frequency', 5);
+    [sourceactivity2, time] = ni2_activation('latency', 0.4, 'frequency', 5);
 
 Verify the result by using the plot function. You can visualize the two time courses in the same figure by doing:
 
     figure; hold on;
-    plot(time, data);
-    plot(time2, data2, 'r');
+    plot(time, sourceactivity, 'b');
+    plot(time, sourceactivity2, 'r');
 
-The hold on command is necessary in order to show more than one line in the figure.
+The `hold on` command is necessary in order to show more than one line in the figure.
 
 > Evaluate the effect of the different parameter settings is on the shape of the time course, by specifying different values for the frequency, ncycle, latency and phase.
 
 We can apply a very simple instantaneous mixing to the two sources' timecourses by just summing the two. This procedure is equivalent to taking a weighted combination, where the weight for each source is 1:
 
-    datamix = data+data2;
+    datamix = sourceactivity + sourceactivity2;
     figure; plot(time, datamix);
 
-> Plot the three activation time courses in a single figure and verify that the peaks and troughs in the mixed signal do not necessarily end up at the same latencies as in the constituent source signals.
+> Plot the three time courses in a single figure and verify that the peaks and troughs in the mixed signal do not necessarily end up at the same latencies as in the constituent source signals.
 
-> Investigate how the morphology of the mixed signal changes, when the latency of the second component (data2) is changed. Also, see what the effect is of changing the phase of the second component. Hint: create a new 'data2’ with different input parameters to ni2_activation and create a new 'datamix’. Look in the help documentation of ni2_activation to try and understand how to adjust the phase of the signal.
+> Investigate how the morphology of the mixed signal changes, when the latency of the second component (sourceactivity2) is changed. Also, see what the effect is of changing the phase of the second component. Hint: create a new `sourceactivity2` with different input parameters to ni2_activation and create a new 'datamix’. Look in the help documentation of ni2_activation to try and understand how to adjust the phase of the signal.
 
 Next, we will verify that a (weighted) combination of two (or more) activation time courses can be easily achieved by means of a matrix multiplication. To this end we first concatenate the original source activations into a single matrix (each of the original timecourses will be a row in the resulting matrix):
 
-    datacombined = [data; data2];
+    sourcecombined = [sourceactivity; sourceactivity2];
 
 Note that it is now very easy to plot both timecourses with a single plotting command:
 
-    figure; plot(time, datacombined);
+    figure; plot(time, sourcecombined);
 
 We can now make a mixture of the two 'sources' with a simple matrix multiplication. Execute the following lines of code and verify that the outcomes are the same.
 
-    datamix1 = data+data2;
-    datamix2 = sum(datacombined, 1);
-    datamix3 = [1 1]*datacombined;
+    datamix1 = sourceactivity + sourceactivity2;
+    datamix2 = sum(sourcecombined, 1);
+    datamix3 = [1 1] * sourcecombined;
 
 or, more generally
 
     mix = [1 1];
-    datamix3 = mix*datacombined;
+    datamix3 = mix * sourcecombined;
 
 Note that the outcome of a matrix multiplication A*B, where the input matrices are of dimensionality n x m and m x p yields a matrix of dimensionality n x p. If you don't remember exactly the mechanics involved in a matrix multiplication, you should look this up in the course material for the CNS Advanced Mathematics course, or you could check the Wikipedia entry on matrix multiplication. In our example p corresponds with the number of time points, m with the number of 'sources', and n with the number of 'channels'. Our (very simple) 1 x 2 mixing matrix [1 1] thus corresponds to the mapping of 2 sources onto a single channel, where each of the sources is weighted with a factor of 1. We can increase the number of channels by increasing the number of rows in the matrix mix:
 
     mix = [0 1; 0.1 0.9; 0.25 0.75; 0.5 0.5; 0.75 0.25; 0.9 0.1; 1 0];
-    datamix = mix*datacombined;
+    datamix = mix * sourcecombined;
 
 To better evaluate the individual time courses of the mixed sources, but still visualizing them in the same figure, you can type:
 
@@ -114,19 +114,19 @@ To create the headmodel, type:
 
 To create the sensor array, type:
 
-    sens = ni2_sensors('type', 'eeg')
+    sensors = ni2_sensors('type', 'eeg')
 
 These can be visualized using a few functions from the FieldTrip-toolbox:
 
     figure; hold on;
-    ft_plot_vol(headmodel, 'edgecolor', 'none');
-    ft_plot_sens(sens);
+    ft_plot_headmodel(headmodel, 'edgecolor', 'none');
+    ft_plot_sens(sensors);
 
-Now we have a sensor array and a volume conductor model we can build a model for any source specified within the volume conductor. For example:
+Now that we have a sensor array and a volume conductor model of the head, we can build a model for any source specified within the volume conductor. For example:
 
     dippar1 = [0 0 6 1 0 0];
-    leadfield1 = ni2_leadfield(sens, headmodel, dippar1);
-    ni2_topoplot(sens, leadfield1); colorbar
+    leadfield1 = ni2_leadfield(sensors, headmodel, dippar1);
+    ni2_topoplot(sensors, leadfield1); colorbar
 
 The variable dippar1 consists of 6 elements, where the first triplet of numbers represents the x, y, z-position of the dipole, and the second triplet of numbers represents the dipole moment.
 
@@ -135,18 +135,18 @@ The variable dippar1 consists of 6 elements, where the first triplet of numbers 
 A basic feature of a leadfield is that a change in the amplitude of the dipole does not change the topography. This can be explored as follows:
 
     dippar2 = [0 0 6 2 0 0];
-    leadfield2 = ni2_leadfield(sens, headmodel, dippar2);
-    ni2_topoplot(sens, leadfield2); colorbar
+    leadfield2 = ni2_leadfield(sensors, headmodel, dippar2);
+    ni2_topoplot(sensors, leadfield2); colorbar
 
 > Verify that the values in leadfield2 differ from the values in leadfield1 by a factor of 2.
 
 The important consequence of this is that the amplitude can be 'uncoupled' from the orientation (and location) information. Namely:
 
-    ni2_topoplot(sens, leadfield1*2); colorbar
+    ni2_topoplot(sensors, leadfield1*2); colorbar
 
 will yield the same result as:
 
-    ni2_topoplot(sens, leadfield2); colorbar
+    ni2_topoplot(sensors, leadfield2); colorbar
 
 For this reason, it is custom (and convenient) that leadfields are defined as the spatial topography of the electric potential (EEG) or magnetic field (MEG) due to a unit-amplitude source at a given location and orientation.
 
@@ -159,9 +159,9 @@ We will return to this very important property in the next section.
 Another basic feature is that if two (or more sources) are simultaneously active, the topographies caused by the individual sources' mix linearly to yield a composite topography:
 
     dippar3 = [0 0 5.99 1 0 0; 0 0 6.01 1 0 0];
-    leadfield3 = ni2_leadfield(sens, headmodel, dippar3);
+    leadfield3 = ni2_leadfield(sensors, headmodel, dippar3);
     topo = leadfield3*[1; 1];
-    ni2_topoplot(sens, topo); colorbar
+    ni2_topoplot(sensors, topo); colorbar
 
 The variable dippar3 consists of 2 rows of 6 parameters, each representing a dipole. As a result, the variable leadfield3 consists of two columns, each representing the spatial topography that is caused by one dipole.
 

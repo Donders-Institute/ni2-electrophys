@@ -1,6 +1,6 @@
 function sens = ni2_sensors(varargin)
 
-% NI2_SENSORS create a fictive sensor-array. 
+% NI2_SENSORS create a fictive sensor-array.
 %
 % Use as
 %  sens = ni2_sensors('type', senstype);
@@ -18,18 +18,20 @@ n      = ft_getopt(varargin, 'n', 162); % number of vertices for the sphere, det
 
 switch type
   case 'eeg'
-    % create an eeg electrode array
+    % create an electrode array
     [chanpos, tri] = mesh_sphere(n);
     chanpos        = chanpos*10;
     chanpos(chanpos(:,3)<0,:) = [];
-    
+
     if jitter
       [th,phi,r] = cart2sph(chanpos(:,1), chanpos(:,2), chanpos(:,3));
       shift1 = 2*jitter*(rand(numel(th),1)  - 1);
       shift2 = 2*jitter*(rand(numel(phi),1) - 1);
       [chanpos(:,1),chanpos(:,2),chanpos(:,3)] = sph2cart(th+shift1(:),phi+shift2(:),r);
     end
-      
+
+    sens.unit    = 'cm';
+    sens.coordsys = 'neuromag';
     sens.chanpos = chanpos;
     sens.elecpos = chanpos;
     for k = 1:size(chanpos,1)
@@ -37,18 +39,21 @@ switch type
       sens.chantype{k,1} = 'eeg';
     end
     sens = ft_datatype_sens(sens);
-    
-    
-  case {'meg_mag' 'meg'}
-    % create an meg magnetometer array
+
+  case {'meg'}
+    % create a magnetometer array
     [chanpos, tri] = icosahedron642;
+    coilori        = chanpos;
     chanpos        = chanpos*12.5;
     chanpos(:,3)   = chanpos(:,3) - 1.5;
-    
-    [x, y, z, chanpos, tri] = intersect_plane(chanpos, tri, [0 0 0], [1 0 0], [0 1 0]);
-    coilori                 = normals(chanpos, tri, 'vertex');
-  
-    nchan        = size(chanpos,1);
+
+    z = chanpos(:,3);
+    coilori        = coilori(z>0,:);
+    chanpos        = chanpos(z>0,:);
+    nchan          = size(chanpos,1);
+
+    sens.unit    = 'cm';
+    sens.coordsys = 'neuromag';
     sens.chanpos = chanpos;
     sens.chanori = coilori;
     sens.coilpos = chanpos;
@@ -59,42 +64,52 @@ switch type
       sens.chantype{k,1} = 'megmag';
     end
     sens = ft_datatype_sens(sens);
-    sens.tri = tri;
-    
-  case 'meg_grad_axial'
-    % create an meg axial gradiometer array
-    [chanpos, tri] = icosahedron642;
-    chanpos        = chanpos*12.5;
-    chanpos(:,3)   = chanpos(:,3) - 1.5;
-    
-    [x, y, z, chanpos, tri] = intersect_plane(chanpos, tri, [0 0 0], [1 0 0], [0 1 0]);
-    coilori                 = normals(chanpos, tri, 'vertex');
-  
-    nchan        = size(chanpos,1);
-    sens.chanpos = chanpos;
-    sens.chanori = coilori;
-    sens.coilpos = [chanpos; chanpos+5*coilori];
-    sens.coilori = [coilori; -coilori];
-    sens.tra     = [eye(nchan) eye(nchan)];
-    for k = 1:nchan
-      sens.label{k,1}    = sprintf('meg% 03d', k);
-      sens.chantype{k,1} = 'meggrad';
-    end
-    sens = ft_datatype_sens(sens);
-    sens.tri = tri;
-    
-    
-  case 'meg_grad_planar'
-    % not implemented yet
-  case 'meg_ctf275'
-    load('ctf275');
-  case 'meg_ctf151'
+
+  case 'ctf151'
     load('ctf151');
-  case 'meg_bti248'
+    % only keep the normal channels
+
+    sel = strcmp(sens.chantype, 'meggrad');
+    sens.label    = sens.label(sel);
+    sens.chantype = sens.chantype(sel);
+    sens.chanunit = sens.chanunit(sel);
+    sens.tra      = sens.tra(sel,:);
+    sens.chanpos  = sens.chanpos(sel,:);
+    sens.chanori  = sens.chanori(sel,:);
+
+  case 'ctf275'
+    load('ctf275');
+
+    % only keep the normal MEG channels
+    sel = strcmp(sens.chantype, 'meggrad');
+    sens.label    = sens.label(sel);
+    sens.chantype = sens.chantype(sel);
+    sens.chanunit = sens.chanunit(sel);
+    sens.tra      = sens.tra(sel,:);
+    sens.chanpos  = sens.chanpos(sel,:);
+    sens.chanori  = sens.chanori(sel,:);
+
+  case 'bti248'
     load('bti248');
-  case 'meg_neuromag306'
+
+    % only keep the normal MEG channels
+    sel = strcmp(sens.chantype, 'megmag');
+    sens.label    = sens.label(sel);
+    sens.chantype = sens.chantype(sel);
+    sens.chanunit = sens.chanunit(sel);
+    sens.tra      = sens.tra(sel,:);
+    sens.chanpos  = sens.chanpos(sel,:);
+    sens.chanori  = sens.chanori(sel,:);
+
+  case 'neuromag306'
     load('neuromag306');
+
+  case 'eeg1020'
+    load('eeg1020');
+
+  case 'eeg1010'
+    load('eeg1010');
+
   otherwise
     error('unsupported type % s', type);
 end
- 

@@ -19,4 +19,4 @@ The part on inverse modeling is further split over these three:
 
 ### MATLAB complains that mexmaci64 cannot be opened because the developer cannot be verified
 
-This happens on recent macOS computers, see [this page](https://www.fieldtriptoolbox.org/faq/mexmaci64_cannot_be_opened_because_the_developer_cannot_be_verified/) to solve it.
+This happens on computers with a more recent macOS version, see [this page](https://www.fieldtriptoolbox.org/faq/mexmaci64_cannot_be_opened_because_the_developer_cannot_be_verified/) to solve it.

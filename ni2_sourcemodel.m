@@ -32,6 +32,7 @@ switch type
       % sourcemodel.outside = outside;
       sourcemodel.inside  = in(:);
       sourcemodel.dim     = [numel(ax) numel(ax) numel(ax(ax>-1))];
+
     else
       headmodel = ft_convert_units(headmodel);
       origunits = headmodel.unit;
@@ -48,6 +49,7 @@ switch type
     
   case 'mesh'
     load('Subject01_sourcemodel_15684');
+
   otherwise
     error('unsupported type of sourcemodel requested');
 end

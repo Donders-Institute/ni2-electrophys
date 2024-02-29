@@ -1,24 +1,19 @@
 function [data, time] = ni2_activation(varargin)
 
-% NI2_ACTIVATION creates a timecourse of simplified activity.
+% NI2_ACTIVATION creates a timecourse of the activity of a dipole in the brain.
 %
 % Use as
 %   [data, time] = ni2_activation
 %   [data, time] = ni2_activation('key1', value1, 'key2', value2)
 %
-% Input arguments:
-%   key-value pairs determine the shape of the activations.
-%
-%   frequency, scalar value (in Hz): frequency of oscillatory burst, default = 10 Hz   
-%   phase,     scalar value (in radians): phase of the oscillation at the
-%                peak latency, default = 0
-%   latency,   scalar value (in s): latency at which the amplitude of the
-%                oscillation peaks, default = 0.5
-%   length,    scalar value (in s): length of the activation time course,
-%                the sampling interval is fixed to 1 ms/sampl, default = 1
-%   ncycle,    scalar value: number of oscillatory cycles in the burst, default = 5
-%   powerup,    binary value: 1 = power burst (default); 0 = power loss
-%   fsample,   scalar value: sampling rate (Hz) (default 1000 Hz)
+% Options should be specified as key-value pairs and can be
+%   frequency = scalar value (in Hz): frequency of oscillatory burst, default = 10 Hz   
+%   phase     = scalar value (in radians): phase of the oscillation at the peak latency, default = 0
+%   latency   = scalar value (in s): latency at which the amplitude of the oscillation peaks, default = 0.5
+%   length    = scalar value (in s): length of the activation time course, the sampling interval is fixed to 1 ms/sampl, default = 1
+%   ncycle    = scalar value: number of oscillatory cycles in the burst, default = 5
+%   powerup   = binary value: 1 = power burst (default); 0 = power loss
+%   fsample   = scalar value: sampling rate (Hz) (default 1000 Hz)
 %
 % Output arguments:
 %   data = 1xN vector with the activation time course

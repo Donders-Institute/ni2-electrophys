@@ -1,16 +1,23 @@
 function sens = ni2_sensors(varargin)
 
-% NI2_SENSORS create a fictive sensor-array.
+% NI2_SENSORS creates an EEG or MEG sensor array.
 %
 % Use as
-%  sens = ni2_sensors('type', senstype);
+%   sens = ni2_sensors('type', 'eeg')
+%   sens = ni2_sensors('type', 'meg')
+%   sens = ni2_sensors('type', 'ctf151')
+%   sens = ni2_sensors('type', 'ctf275')
+%   sens = ni2_sensors('type', 'bti248')
+%   sens = ni2_sensors('type', 'neuromag306')
+%   sens = ni2_sensors('type', 'eeg1020')
+%   sens = ni2_sensors('type', 'eeg1010')
 %
-% Where senstype can be any of the following:
-%  'eeg' generates a 91-channel eeg sensor array
-%  'meg' generates a 301-channel meg magnetometer sensor array
-%  'meg_grad_axial' generates a 301-channel meg axial gradiometer sensor
-%  array.
-
+% The default EEG sensor array consists of 91 electrodes over the upper half of a
+% sphere. The default MEG sensor array consists of 301 axial magnetometers over the
+% upper half of a sphere.
+%
+% Note that the units and the coordinate systems in which the sensors are described
+% can differ.
 
 type   = ft_getopt(varargin, 'type', 'eeg');
 jitter = ft_getopt(varargin, 'jitter', 0);

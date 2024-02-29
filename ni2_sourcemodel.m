@@ -1,37 +1,38 @@
 function sourcemodel = ni2_sourcemodel(varargin)
 
-% NI2_SOURCEMODEL generates a sourcemodel for forward and inverse modeling. 
+% NI2_SOURCEMODEL generates a sourcemodel for forward and inverse modeling.
 %
-% Use as:
-%  sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', res)
+% Use as
+%   sourcemodel = ni2_sourcemodel('type', 'mesh');
+%   sourcemodel = ni2_sourcemodel('type', 'grid', 'resolution', res)
 %
-% Where res is a scalar that specifies the spacing between the dipoles (in
-% cm). A regular 3-dimensional grid of dipoles is created.
+% The first call returns a source model that consists of many dipoles that form a
+% triangulated mesh that describes the cortical sheet.
+%
+% The second call creates a regular 3-dimensional grid of dipoles. The parameter res
+% is a scalar (in cm) that specifies the resolution, i.e., the spacing between the
+% dipoles.
 
-type       = ft_getopt(varargin, 'type',      'grid');
+type       = ft_getopt(varargin, 'type', 'grid');
 headmodel  = ft_getopt(varargin, 'headmodel', []);
 resolution = ft_getopt(varargin, 'resolution', 0.5); % in cm
 
 switch type
   case 'grid'
     if isempty(headmodel)
-      resolution = ft_getopt(varargin, 'resolution', 0.5);
       ax         = 0:resolution:9;
       ax         = [-fliplr(ax(2:end)) ax];
       [x,y,z]    = ndgrid(ax, ax, ax(ax>-1));
-      in         = false(size(x));
-      in(sqrt(x.^2+y.^2+z.^2)<=9) = true;
+      inside     = false(size(x));
+      inside(sqrt(x.^2+y.^2+z.^2)<=9) = true;
       
       pos        = [x(:) y(:) z(:)];
-      % inside     = find(in);
-      % outside    = find(in==0);
       clear x y z
       
       sourcemodel.pos     = pos;
-      % sourcemodel.inside  = inside;
-      % sourcemodel.outside = outside;
-      sourcemodel.inside  = in(:);
+      sourcemodel.inside  = inside(:);
       sourcemodel.dim     = [numel(ax) numel(ax) numel(ax(ax>-1))];
+      sourcemodel.unit    = 'cm';
 
     else
       headmodel = ft_convert_units(headmodel);
@@ -40,7 +41,7 @@ switch type
       
       cfg = [];
       cfg.headmodel  = headmodel;
-      cfg.resolution = resolution;
+      cfg.resolution = resolution; % in cm
       cfg.inwardshift = -1.*resolution;
       sourcemodel = ft_prepare_sourcemodel(cfg);
       

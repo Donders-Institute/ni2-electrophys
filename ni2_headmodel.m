@@ -11,7 +11,7 @@ function headmodel = ni2_headmodel(varargin)
 % three concentric spheres model that can be used in combination with EEG
 % sensor-arrays.
 
-type = ft_getopt(varargin, 'type',    'spherical');
+type = ft_getopt(varargin, 'type', 'spherical');
 n    = ft_getopt(varargin, 'nshell', 1);
 
 switch type
@@ -24,6 +24,7 @@ switch type
         headmodel.unit = 'cm';
         headmodel.type = 'singlesphere';
         headmodel      = ft_datatype_headmodel(headmodel);
+        headmodel.coordsys = 'ctf';
       case 3
         headmodel.o    = [0 0 0];
         headmodel.r    = [0.88 0.92 1.00]*10;
@@ -31,11 +32,16 @@ switch type
         headmodel.unit = 'cm';
         headmodel.type = 'concentricspheres';
         headmodel      = ft_datatype_headmodel(headmodel);
+        headmodel.coordsys = 'ctf';
       otherwise
         error('number of spheres other than 1 or 3 is not supported');
     end
+
   case 'singleshell'
+    % note that this is in CTF coordinates
     load('Subject01_headmodel');
+    headmodel.coordsys = 'ctf';
+
   otherwise
     error('unknown type requested');
 end

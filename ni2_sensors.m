@@ -30,10 +30,10 @@ switch type
       [chanpos(:,1),chanpos(:,2),chanpos(:,3)] = sph2cart(th+shift1(:),phi+shift2(:),r);
     end
 
-    sens.unit    = 'cm';
-    sens.coordsys = 'neuromag';
-    sens.chanpos = chanpos;
-    sens.elecpos = chanpos;
+    sens.unit     = 'cm';
+    sens.coordsys = 'ctf';
+    sens.chanpos  = chanpos;
+    sens.elecpos  = chanpos;
     for k = 1:size(chanpos,1)
       sens.label{k,1}    = sprintf('eeg% 02d', k);
       sens.chantype{k,1} = 'eeg';
@@ -52,13 +52,13 @@ switch type
     chanpos        = chanpos(z>0,:);
     nchan          = size(chanpos,1);
 
-    sens.unit    = 'cm';
-    sens.coordsys = 'neuromag';
-    sens.chanpos = chanpos;
-    sens.chanori = coilori;
-    sens.coilpos = chanpos;
-    sens.coilori = coilori;
-    sens.tra     = eye(nchan);
+    sens.unit     = 'cm';
+    sens.coordsys = 'ctf';
+    sens.chanpos  = chanpos;
+    sens.chanori  = coilori;
+    sens.coilpos  = chanpos;
+    sens.coilori  = coilori;
+    sens.tra      = eye(nchan);
     for k = 1:nchan
       sens.label{k,1}    = sprintf('meg% 03d', k);
       sens.chantype{k,1} = 'megmag';
@@ -67,8 +67,8 @@ switch type
 
   case 'ctf151'
     load('ctf151');
-    % only keep the normal channels
 
+    % only keep the normal MEG channels
     sel = strcmp(sens.chantype, 'meggrad');
     sens.label    = sens.label(sel);
     sens.chantype = sens.chantype(sel);
